@@ -1,2 +1,2 @@
-# Projekt-Ca-eTe
+# Projekt-CałeTe
 Projekt lepszy plan WI ZUT.
