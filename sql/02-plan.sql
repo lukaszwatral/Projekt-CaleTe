@@ -5,6 +5,7 @@ CREATE TABLE Wydzial (
 );
 
 CREATE TABLE Sala_z_budynkiem (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     budynek_sala TEXT NOT NULL,
     wydzial_id INTEGER NOT NULL,
     FOREIGN KEY (wydzial_id) REFERENCES Wydzial(id)
@@ -23,12 +24,12 @@ CREATE TABLE Przedmiot (
     nazwa TEXT NOT NULL,
 --     opis TEXT NOT NULL,
     tok_studiow_id INTEGER NOT NULL,
-    FOREIGN KEY (tok_studiow_id) REFERENCES Tok_studiow(id),
+    FOREIGN KEY (tok_studiow_id) REFERENCES Tok_studiow(id)
 );
 
 CREATE TABLE Grupa (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    nazwa TEXT NOT NULL,
+    nazwa TEXT NOT NULL
 );
 
 CREATE TABLE Student (
