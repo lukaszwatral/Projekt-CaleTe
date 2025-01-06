@@ -82,4 +82,28 @@ class Zajecia {
         return $zajecia;
     }
 
+   public static function filteredFind($nazwaGrupy): array
+{
+    $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
+    $sql = 'SELECT id FROM Grupa WHERE nazwa = :nazwaGrupy';
+    $statement = $pdo->prepare($sql);
+    $statement->execute(['nazwaGrupy' => $nazwaGrupy]);
+    $grupaIdArray = $statement->fetch(\PDO::FETCH_ASSOC);
+    if (!$grupaIdArray) {
+        return [];
+    }
+
+    $grupaId = $grupaIdArray['id'];
+    $sql = 'SELECT * FROM Zajecia WHERE grupa_id = :grupaId';
+    $statement = $pdo->prepare($sql);
+    $statement->execute(['grupaId' => $grupaId]);
+
+    $zajecia = [];
+    $zajeciaArray = $statement->fetchAll(\PDO::FETCH_ASSOC);
+    foreach ($zajeciaArray as $zajArray) {
+        $zajecia[] = self::fromArray($zajArray);
+    }
+
+    return $zajecia;
+}
 }

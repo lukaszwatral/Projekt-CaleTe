@@ -11,7 +11,7 @@ ob_start(); ?>
 
     <ul class="index-list">
         <?php foreach ($zajecia as $zaj): ?>
-            <li><h3><?= $zaj->getGrupaId() ?></h3>
+            <li><h3><?= $zaj->getId(), " ", $zaj->getGrupaId() ?></h3>
             </li>
         <?php endforeach; ?>
     </ul>

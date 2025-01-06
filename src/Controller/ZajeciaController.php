@@ -10,7 +10,7 @@ class ZajeciaController
 {
     public function indexAction(Templating $templating, Router $router): ?string
     {
-        $zajecia = Zajecia::findAll();
+        $zajecia = Zajecia::filteredFind("G_pro_01");
         $html = $templating->render('zajecia/index.html.php', [
             'zajecia' => $zajecia,
             'router' => $router,
