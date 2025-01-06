@@ -42,6 +42,10 @@ switch ($action) {
         $controller = new \App\Controller\InfoController();
         $view = $controller->infoAction();
         break;
+    case 'zajecia-index':
+        $controller = new \App\Controller\ZajeciaController();
+        $view = $controller->indexAction($templating, $router);
+        break;
     default:
         $view = 'Not found';
         break;
