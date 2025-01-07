@@ -55,6 +55,7 @@ class ScrapeData
             //Przedmiot
             if(isset($item['subject'])){
                 $przedmiot = $item['subject'];
+                $forma = $item['lesson_form'];
                 $tryb = $item['rodzaj_sk'];
                 if($tryb == null){
                     $tryb = "Brak";
@@ -63,7 +64,7 @@ class ScrapeData
                 if($typ == null){
                     $typ = "Brak";
                 }
-                $this->insertPrzedmiot($przedmiot, $tryb, $typ);
+                $this->insertPrzedmiot($przedmiot, $tryb, $typ, $forma);
             }
             //Grupa
             if(isset($item['group_name'])){
@@ -91,7 +92,11 @@ class ScrapeData
                 if($tok_studiow == null){
                     $tok_studiow = "Brak";
                 }
-                $this->insertZajecia($id, $data_start, $data_koniec, $zastepca, $wykladowca, $wydzial, $grupa, $tok_studiow);
+                $przedmiot = $item['subject'];
+                $forma = $item['lesson_form'];
+                $sala_budynek = $item['room'];
+                $semestr = $item['semestr'];
+                $this->insertZajecia($id, $data_start, $data_koniec, $zastepca, $wykladowca, $wydzial, $grupa, $tok_studiow, $przedmiot, $forma, $sala_budynek, $semestr);
             }
         }
     }
@@ -155,7 +160,7 @@ class ScrapeData
             $stmt->execute();
         }
     }
-    private function insertPrzedmiot(string $przedmiot, string $tryb, string$typ)
+    private function insertPrzedmiot(string $przedmiot, string $tryb, string $typ, string $forma)
     {
         $stmt = $this->pdo->prepare("SELECT id FROM Tok_studiow WHERE tryb_skrot = :tryb AND typ_skrot = :typ");
         $stmt->bindParam(':tryb', $tryb);
@@ -165,14 +170,16 @@ class ScrapeData
 
         if($result){
             $tok_id = $result['id'];
-            $stmt = $this->pdo->prepare("SELECT id FROM Przedmiot WHERE nazwa = :przedmiot AND tok_studiow_id = :tok_id");
+            $stmt = $this->pdo->prepare("SELECT id FROM Przedmiot WHERE nazwa = :przedmiot AND forma = :forma AND tok_studiow_id = :tok_id");
             $stmt->bindParam(':przedmiot', $przedmiot);
+            $stmt->bindParam(':forma', $forma);
             $stmt->bindParam(':tok_id', $tok_id);
             $stmt->execute();
             $result = $stmt->fetch();
             if(!$result){
-                $stmt = $this->pdo->prepare("INSERT INTO Przedmiot (nazwa, tok_studiow_id) VALUES (:przedmiot, :tok_id)");
+                $stmt = $this->pdo->prepare("INSERT INTO Przedmiot (nazwa, forma, tok_studiow_id) VALUES (:przedmiot, :forma, :tok_id)");
                 $stmt->bindParam(':przedmiot', $przedmiot);
+                $stmt->bindParam(':forma', $forma);
                 $stmt->bindParam(':tok_id', $tok_id);
                 $stmt->execute();
             }
@@ -208,7 +215,7 @@ class ScrapeData
             $stmt->execute();
         }
     }
-    private function insertZajecia(int $id, string $data_start, string $data_koniec, string $zastepca, string $wykladowca, string $wydzial, string $grupa, string $tok_studiow)
+    private function insertZajecia(int $id, string $data_start, string $data_koniec, string $zastepca, string $wykladowca, string $wydzial, string $grupa, string $tok_studiow, string $przedmiot, string $forma, string $sala_budynek, int $semestr)
     {
         $stmt = $this->pdo->prepare("SELECT id FROM Wykladowca WHERE nazwisko_imie = :wykladowca");
         $stmt->bindParam(':wykladowca', $wykladowca);
@@ -234,21 +241,39 @@ class ScrapeData
                     $result = $stmt->fetch();
                     if ($result) {
                         $tok_studiow_id = $result['id'];
-                        $stmt = $this->pdo->prepare("SELECT id FROM Zajecia WHERE id = :id");
-                        $stmt->bindParam(':id', $id);
+                        $stmt = $this->pdo->prepare("SELECT id FROM Przedmiot WHERE nazwa = :przedmiot AND forma = :forma");
+                        $stmt->bindParam(':przedmiot', $przedmiot);
+                        $stmt->bindParam(':forma', $forma);
                         $stmt->execute();
                         $result = $stmt->fetch();
-                        if(!$result){
-                            $stmt = $this->pdo->prepare("INSERT INTO Zajecia (id,data_start, data_koniec, zastepca, wykladowca_id, wydzial_id, grupa_id, tok_studiow_id) VALUES (:id,:data_start, :data_koniec, :zastepca, :wykladowca_id, :wydzial_id, :grupa_id, :tok_studiow_id)");
-                            $stmt->bindParam(':id', $id);
-                            $stmt->bindParam(':data_start', $data_start);
-                            $stmt->bindParam(':data_koniec', $data_koniec);
-                            $stmt->bindParam(':zastepca', $zastepca);
-                            $stmt->bindParam(':wykladowca_id', $wykladowca_id);
-                            $stmt->bindParam(':wydzial_id', $wydzial_id);
-                            $stmt->bindParam(':grupa_id', $grupa_id);
-                            $stmt->bindParam(':tok_studiow_id', $tok_studiow_id);
+                        if($result){
+                            $przedmiot_id = $result['id'];
+                            $stmt = $this->pdo->prepare("SELECT id FROM Sala_z_budynkiem WHERE budynek_sala = :sala_budynek");
+                            $stmt->bindParam(':sala_budynek', $sala_budynek);
                             $stmt->execute();
+                            $result = $stmt->fetch();
+                            if($result){
+                                $sala_id = $result['id'];
+                                $stmt = $this->pdo->prepare("SELECT id FROM Zajecia WHERE id = :id");
+                                $stmt->bindParam(':id', $id);
+                                $stmt->execute();
+                                $result = $stmt->fetch();
+                                if(!$result){
+                                    $stmt = $this->pdo->prepare("INSERT INTO Zajecia (id,data_start, data_koniec, zastepca, semestr, wykladowca_id, wydzial_id, grupa_id, tok_studiow_id, przedmiot_id, sala_id) VALUES (:id,:data_start, :data_koniec, :zastepca, :semestr, :wykladowca_id, :wydzial_id, :grupa_id, :tok_studiow_id, :przedmiot_id, :sala_id)");
+                                    $stmt->bindParam(':id', $id);
+                                    $stmt->bindParam(':data_start', $data_start);
+                                    $stmt->bindParam(':data_koniec', $data_koniec);
+                                    $stmt->bindParam(':zastepca', $zastepca);
+                                    $stmt->bindParam(':semestr', $semestr);
+                                    $stmt->bindParam(':wykladowca_id', $wykladowca_id);
+                                    $stmt->bindParam(':wydzial_id', $wydzial_id);
+                                    $stmt->bindParam(':grupa_id', $grupa_id);
+                                    $stmt->bindParam(':tok_studiow_id', $tok_studiow_id);
+                                    $stmt->bindParam(':przedmiot_id', $przedmiot_id);
+                                    $stmt->bindParam(':sala_id', $sala_id);
+                                    $stmt->execute();
+                                }
+                            }
                         }
                     }
                 }

@@ -16,8 +16,8 @@ try {
     $pdo = new PDO($dsn, $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    //$sql = file_get_contents('Projekt-Ca-eTe\sql\02-plan.sql'); // Adjust the path as necessary
-    //$pdo->exec($sql);
+//    $sql = file_get_contents('C:\Users\smh2k\Desktop\ProjektNaApki\Projekt-Ca-eTe\sql\02-plan.sql'); // Adjust the path as necessary
+//    $pdo->exec($sql);
 
     // Create an instance of ScrapeData
     $scrapeData = new \App\Service\ScrapeData($pdo);
