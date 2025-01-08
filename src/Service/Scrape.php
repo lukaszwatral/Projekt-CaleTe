@@ -2,12 +2,12 @@
 namespace App\Service;
 use App\Service\Config;
 
-class ScrapeData
+class Scrape
 {
     //@todo Pamiętaj o ustawieniu PDO jak klase tworzysz
-    private $pdo;
-    public function __construct(\PDO $pdo)
-    {
+    private \PDO $pdo;
+
+    public function __construct(\PDO $pdo) {
         $this->pdo = $pdo;
     }
 
@@ -15,7 +15,7 @@ class ScrapeData
      * @throws \Exception
      */
     public function scrapeData(string $department){
-        $apiURL = "https://plan.zut.edu.pl/schedule_student.php?kind=apiwi&department={$department}&start=2024-10-7&end=2024-10-8";
+        $apiURL = "https://plan.zut.edu.pl/schedule_student.php?kind=apiwi&department={$department}&start=2025-01-13&end=2025-01-19";
         $response = file_get_contents($apiURL);
         if(!$response) {
             die('No response');
@@ -38,11 +38,23 @@ class ScrapeData
                 $this->insertSalaBudynek($room, $wydzial);
             }
             //Tok studiów
-            if(isset($item['typ_sk']) && isset($item['rodzaj_sk'])){
+            if(isset($item['typ_sk']) || isset($item['rodzaj_sk'])){
                 $typ_sk = $item['typ_sk'];
+                if($typ_sk == null){
+                    $typ_sk = "Brak";
+                }
                 $tryb_sk = $item['rodzaj_sk'];
+                if($tryb_sk == null){
+                    $tryb_sk = "Brak";
+                }
                 $tryb = $item['rodzaj'];
+                if ($tryb == null){
+                    $tryb = "Brak";
+                }
                 $typ = $item['typ'];
+                if($typ == null){
+                    $typ = "Brak";
+                }
                 $this->insertTokStudiow($typ_sk, $tryb_sk, $tryb, $typ);
             }
             else{
@@ -167,7 +179,6 @@ class ScrapeData
         $stmt->bindParam(':typ', $typ);
         $stmt->execute();
         $result = $stmt->fetch();
-
         if($result){
             $tok_id = $result['id'];
             $stmt = $this->pdo->prepare("SELECT id FROM Przedmiot WHERE nazwa = :przedmiot AND forma = :forma AND tok_studiow_id = :tok_id");
@@ -185,7 +196,8 @@ class ScrapeData
             }
         }
         else{
-            throw new \Exception("Tok_studiow not found");
+            echo $przedmiot;
+            throw new \Exception("Przedmiot: Tok_studiow not found");
         }
 
     }
@@ -280,18 +292,40 @@ class ScrapeData
             }
         }
     }
-    private function insertGrupaStudent(int $numer_albumu, string $grupa)
+    public function insertGrupaStudent(int $numer_albumu)
     {
-        //Sprawdzanie czy student o tym numerze albumu istnieje
-        $stmt = $this->pdo->prepare("SELECT id FROM Student WHERE id = :numer_albumu");
+        $apiURL = "https://plan.zut.edu.pl/schedule_student.php?number={$numer_albumu}&start=2024-10-1&end=2024-10-31";
+        $response = file_get_contents($apiURL);
+        if(!$response) {
+            die('No response');
+        }
+        $json = json_decode($response, true);
+        $uniqueGroups = [];
+
+        foreach ($json as $item) {
+            if(isset($item['group_name'])){
+                $grupa = $item['group_name'];
+                if (!in_array($grupa, $uniqueGroups)) {
+                    $uniqueGroups[] = $grupa;
+                }
+            }
+        }
+
+        $stmt = $this->pdo->prepare("INSERT INTO Student (id) VALUES (:numer_albumu)");
         $stmt->bindParam(':numer_albumu', $numer_albumu);
         $stmt->execute();
-        $result = $stmt->fetch();
-        //Jeżeli nie to dodanie studenta
-        if(!$result){
-            $stmt = $this->pdo->prepare("INSERT INTO Student (id) VALUES (:numer_albumu)");
-            $stmt->bindParam(':numer_albumu', $numer_albumu);
+
+        foreach($uniqueGroups as $group){
+            $stmt = $this->pdo->prepare("SELECT id FROM Grupa WHERE nazwa = :grupa");
+            $stmt->bindParam(':grupa', $group);
             $stmt->execute();
+            $result = $stmt->fetch();
+            if($result){
+                $stmt = $this->pdo->prepare("INSERT INTO Grupa_Student (grupa_id,student_id) VALUES (:grupa,:student)");
+                $stmt->bindParam(':grupa', $result['id']);
+                $stmt->bindParam(':student', $numer_albumu);
+                $stmt->execute();
+            }
         }
     }
 }

@@ -20,7 +20,7 @@ try {
 //    $pdo->exec($sql);
 
     // Create an instance of ScrapeData
-    $scrapeData = new \App\Service\ScrapeData($pdo);
+    $scrapeData = new \App\Service\Scrape($pdo);
 
     // Call the scrapeData method with the department parameter
     $departmentTable = array('WI','WE','WA','WEkon','WTMiT','WTiICH','WBiIS','WIMiM','WNoZiR','WBiHZ','WKSiR');

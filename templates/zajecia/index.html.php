@@ -37,6 +37,9 @@ ob_start(); ?>
         <label for="rok_studiow">Rok Studiow:</label>
         <input type="text" id="rok_studiow" name="rok_studiow" value="<?= htmlspecialchars($_GET['rok_studiow'] ?? '') ?>">
 
+        <label for="student">Student:</label>
+        <input type="text" id="student" name="student" value="<?= htmlspecialchars($_GET['student'] ?? '') ?>">
+
         <button type="submit">Filter</button>
     </form>
 

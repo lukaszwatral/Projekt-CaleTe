@@ -2,7 +2,7 @@
 namespace App\Model;
 
 use App\Service\Config;
-
+use App\Service\Scrape;
 class Zajecia {
     private ?int $id = null;
     private ?string $data_start = null;
@@ -330,7 +330,7 @@ public function setTypStudiowName(?string $typ_studiow_name): void
         return $zajecia;
     }
 
-    public static function filteredFind($wykladowca = null, $przedmiot = null, $sala = null, $grupa = null, $wydzial = null, $forma_przedmiotu = null, $typ_studiow = null, $semestr_studiow = null, $rok_studiow = null): array
+    public static function filteredFind($wykladowca = null, $przedmiot = null, $sala = null, $grupa = null, $wydzial = null, $forma_przedmiotu = null, $typ_studiow = null, $semestr_studiow = null, $rok_studiow = null, $student = null): array
     {
         $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
 
@@ -365,7 +365,7 @@ public function setTypStudiowName(?string $typ_studiow_name): void
             $sql .= ' AND Sala_z_budynkiem.budynek_sala = :sala';
             $params['sala'] = $sala;
         }
-        if ($grupa != null) {
+        if ($grupa != null && $student == null) {
             $sql .= ' AND Grupa.nazwa = :grupa';
             $params['grupa'] = $grupa;
         }
@@ -390,7 +390,35 @@ public function setTypStudiowName(?string $typ_studiow_name): void
             $params['rok_studiow1'] = $rok_studiow * 2 - 1;
             $params['rok_studiow2'] = $rok_studiow * 2;
         }
-
+        if($student != null){
+            $stmt = $pdo->prepare('SELECT id FROM Student WHERE id = :student');
+            $stmt->bindParam(':student', $student);
+            $stmt->execute();
+            $result = $stmt->fetchAll();
+            if($result){
+                $stmt = $pdo->prepare('SELECT grupa_id FROM Grupa_Student WHERE student_id = :student');
+                $stmt->bindParam(':student', $student);
+                $stmt->execute();
+                $result = $stmt->fetchAll();
+                if($result){
+                    $sql .= ' AND (';
+                    $i = 0;
+                    foreach($result as $row){
+                        if($i > 0){
+                            $sql .= ' OR ';
+                        }
+                        $sql .= 'Zajecia.grupa_id = :grupa_id' . $i;
+                        $params['grupa_id' . $i] = $row['grupa_id'];
+                        $i++;
+                    }
+                    $sql .= ')';
+                }
+            }
+            else{
+                $scrapeData = new Scrape($pdo);
+                $scrapeData->insertGrupaStudent($student);
+            }
+        }
 
         $statement = $pdo->prepare($sql);
         $statement->execute($params);
