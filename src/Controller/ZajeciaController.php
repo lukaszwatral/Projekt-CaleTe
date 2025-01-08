@@ -26,4 +26,13 @@ class ZajeciaController
         ]);
         return $html;
     }
+    public function kalendarzAction(Templating $templating, Router $router): ?string
+    {
+
+        $html = $templating->render('zajecia/kalendarz.html.php', [
+            'router' => $router,
+        ]);
+        return $html;
+    }
+
 }

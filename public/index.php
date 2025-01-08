@@ -46,6 +46,10 @@ switch ($action) {
         $controller = new \App\Controller\ZajeciaController();
         $view = $controller->indexAction($templating, $router);
         break;
+    case 'kalendarz-index':
+        $controller = new \App\Controller\ZajeciaController();
+        $view = $controller->kalendarzAction($templating, $router);
+        break;
     default:
         $view = 'Not found';
         break;
