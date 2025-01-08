@@ -15,10 +15,11 @@ class ZajeciaController
         $grupa = $_GET['grupa'] ?? null;
         $wydzial = $_GET['wydzial'] ?? null;
         $forma_przedmiotu = $_GET['forma_przedmiotu'] ?? null;
+        $typ_studiow = $_GET['typ_studiow'] ?? null;
         $semestr_studiow = $_GET['semestr_studiow'] ?? null;
         $rok_studiow = $_GET['rok_studiow'] ?? null;
 
-        $zajecia = Zajecia::filteredFind($wykladowca, $przedmiot, $sala, $grupa, $wydzial, $forma_przedmiotu, $semestr_studiow, $rok_studiow);
+        $zajecia = Zajecia::filteredFind($wykladowca, $przedmiot, $sala, $grupa, $wydzial, $forma_przedmiotu, $typ_studiow, $semestr_studiow, $rok_studiow);
 
         $html = $templating->render('zajecia/index.html.php', [
             'zajecia' => $zajecia,

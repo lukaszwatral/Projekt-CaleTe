@@ -15,127 +15,215 @@ class Zajecia {
     private ?int $przedmiot_id = null;
     private ?int $sala_id = null;
     private ?int $semestr = null;
+    private ?int $rok_studiow = null;
     private ?int $student_id = null;
+    private ?string $wykladowca_name = null;
+    private ?string $przedmiot_name = null;
+    private ?string $sala_name = null;
+    private ?string $grupa_name = null;
+    private ?string $forma_przedmiotu = null;
+    private ?string $wydzial_name = null;
+    private ?string $typ_studiow_name = null;
 
     public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function setId(?int $id): void
+    {
+        $this->id = $id;
+    }
+
+    public function getDataStart(): ?string
+    {
+        return $this->data_start;
+    }
+
+    public function setDataStart(?string $data_start): void
+    {
+        $this->data_start = $data_start;
+    }
+
+    public function getDataKoniec(): ?string
+    {
+        return $this->data_koniec;
+    }
+
+    public function setDataKoniec(?string $data_koniec): void
+    {
+        $this->data_koniec = $data_koniec;
+    }
+
+    public function getZastepca(): ?string
+    {
+        return $this->zastepca;
+    }
+
+    public function setZastepca(?string $zastepca): void
+    {
+        $this->zastepca = $zastepca;
+    }
+
+    public function getWykladowcaId(): ?int
+    {
+        return $this->wykladowca_id;
+    }
+
+    public function setWykladowcaId(?int $wykladowca_id): void
+    {
+        $this->wykladowca_id = $wykladowca_id;
+    }
+
+    public function getWydzialId(): ?int
+    {
+        return $this->wydzial_id;
+    }
+
+    public function setWydzialId(?int $wydzial_id): void
+    {
+        $this->wydzial_id = $wydzial_id;
+    }
+
+    public function getGrupaId(): ?int
+    {
+        return $this->grupa_id;
+    }
+
+    public function setGrupaId(?int $grupa_id): void
+    {
+        $this->grupa_id = $grupa_id;
+    }
+
+    public function getTokStudiowId(): ?int
+    {
+        return $this->tok_studiow_id;
+    }
+
+    public function setTokStudiowId(?int $tok_studiow_id): void
+    {
+        $this->tok_studiow_id = $tok_studiow_id;
+    }
+
+    public function getPrzedmiotId(): ?int
+    {
+        return $this->przedmiot_id;
+    }
+
+    public function setPrzedmiotId(?int $przedmiot_id): void
+    {
+        $this->przedmiot_id = $przedmiot_id;
+    }
+
+    public function getSalaId(): ?int
+    {
+        return $this->sala_id;
+    }
+
+    public function setSalaId(?int $sala_id): void
+    {
+        $this->sala_id = $sala_id;
+    }
+
+    public function getSemestr(): ?int
+    {
+        return $this->semestr;
+    }
+
+    public function setSemestr(?int $semestr): void
+    {
+        $this->semestr = $semestr;
+    }
+
+    public function getRokStudiow(): ?int
+    {
+        return $this->rok_studiow;
+    }
+
+    public function setRokStudiow(?int $rok_studiow): void
+    {
+        $this->rok_studiow = $rok_studiow;
+    }
+
+    public function getStudentId(): ?int
+    {
+        return $this->student_id;
+    }
+
+    public function setStudentId(?int $student_id): void
+    {
+        $this->student_id = $student_id;
+    }
+
+    public function getWykladowcaName(): ?string
 {
-    return $this->id;
+    return $this->wykladowca_name;
 }
 
-public function setId(?int $id): void
+public function setWykladowcaName(?string $wykladowca_name): void
 {
-    $this->id = $id;
+    $this->wykladowca_name = $wykladowca_name;
 }
 
-public function getDataStart(): ?string
+public function getPrzedmiotName(): ?string
 {
-    return $this->data_start;
+    return $this->przedmiot_name;
 }
 
-public function setDataStart(?string $data_start): void
+public function setPrzedmiotName(?string $przedmiot_name): void
 {
-    $this->data_start = $data_start;
+    $this->przedmiot_name = $przedmiot_name;
 }
 
-public function getDataKoniec(): ?string
+public function getSalaName(): ?string
 {
-    return $this->data_koniec;
+    return $this->sala_name;
 }
 
-public function setDataKoniec(?string $data_koniec): void
+public function setSalaName(?string $sala_name): void
 {
-    $this->data_koniec = $data_koniec;
+    $this->sala_name = $sala_name;
 }
 
-public function getZastepca(): ?string
+public function getGrupaName(): ?string
 {
-    return $this->zastepca;
+    return $this->grupa_name;
 }
 
-public function setZastepca(?string $zastepca): void
+public function setGrupaName(?string $grupa_name): void
 {
-    $this->zastepca = $zastepca;
+    $this->grupa_name = $grupa_name;
 }
 
-public function getWykladowcaId(): ?int
+public function getWydzialName(): ?string
 {
-    return $this->wykladowca_id;
+    return $this->wydzial_name;
 }
 
-public function setWykladowcaId(?int $wykladowca_id): void
+public function setWydzialName(?string $wydzial_name): void
 {
-    $this->wykladowca_id = $wykladowca_id;
+    $this->wydzial_name = $wydzial_name;
 }
 
-public function getWydzialId(): ?int
+public function getTypStudiowName(): ?string
 {
-    return $this->wydzial_id;
+    return $this->typ_studiow_name;
 }
 
-public function setWydzialId(?int $wydzial_id): void
+public function setTypStudiowName(?string $typ_studiow_name): void
 {
-    $this->wydzial_id = $wydzial_id;
+    $this->typ_studiow_name = $typ_studiow_name;
 }
 
-public function getGrupaId(): ?int
-{
-    return $this->grupa_id;
-}
+    public function getFormaPrzedmiotu(): ?string
+    {
+        return $this->forma_przedmiotu;
+    }
 
-public function setGrupaId(?int $grupa_id): void
-{
-    $this->grupa_id = $grupa_id;
-}
-
-public function getTokStudiowId(): ?int
-{
-    return $this->tok_studiow_id;
-}
-
-public function setTokStudiowId(?int $tok_studiow_id): void
-{
-    $this->tok_studiow_id = $tok_studiow_id;
-}
-
-public function getPrzedmiotId(): ?int
-{
-    return $this->przedmiot_id;
-}
-
-public function setPrzedmiotId(?int $przedmiot_id): void
-{
-    $this->przedmiot_id = $przedmiot_id;
-}
-
-public function getSalaId(): ?int
-{
-    return $this->sala_id;
-}
-
-public function setSalaId(?int $sala_id): void
-{
-    $this->sala_id = $sala_id;
-}
-
-public function getSemestr(): ?int
-{
-    return $this->semestr;
-}
-
-public function setSemestr(?int $semestr): void
-{
-    $this->semestr = $semestr;
-}
-
-public function getStudentId(): ?int
-{
-    return $this->student_id;
-}
-
-public function setStudentId(?int $student_id): void
-{
-    $this->student_id = $student_id;
-}
+    public function setFormaPrzedmiotu(?string $forma_przedmiotu): void
+    {
+        $this->forma_przedmiotu = $forma_przedmiotu;
+    }
 
 
     public static function fromArray($array): Zajecia
@@ -180,10 +268,33 @@ public function setStudentId(?int $student_id): void
         }
         if (isset($array['semestr'])) {
             $this->setSemestr($array['semestr']);
+            $this->setRokStudiow(ceil($array['semestr'] / 2));
         }
         if (isset($array['student_id'])) {
             $this->setStudentId($array['student_id']);
         }
+        if (isset($array['wykladowca_name'])) {
+            $this->setWykladowcaName($array['wykladowca_name']);
+        }
+        if (isset($array['przedmiot_name'])) {
+            $this->setPrzedmiotName($array['przedmiot_name']);
+        }
+        if (isset($array['sala_name'])) {
+            $this->setSalaName($array['sala_name']);
+        }
+        if (isset($array['grupa_name'])) {
+            $this->setGrupaName($array['grupa_name']);
+        }
+        if (isset($array['wydzial_name'])) {
+            $this->setWydzialName($array['wydzial_name']);
+        }
+        if (isset($array['typ_studiow_name'])) {
+            $this->setTypStudiowName($array['typ_studiow_name']);
+        }
+        if (isset($array['forma_przedmiotu'])) {
+            $this->setFormaPrzedmiotu($array['forma_przedmiotu']);
+        }
+
         return $this;
     }
 
@@ -219,22 +330,25 @@ public function setStudentId(?int $student_id): void
         return $zajecia;
     }
 
-    public static function filteredFind($wykladowca = null, $przedmiot = null, $sala = null, $grupa = null, $wydzial = null, $forma_przedmiotu = null, $semestr_studiow = null, $rok_studiow = null): array
+    public static function filteredFind($wykladowca = null, $przedmiot = null, $sala = null, $grupa = null, $wydzial = null, $forma_przedmiotu = null, $typ_studiow = null, $semestr_studiow = null, $rok_studiow = null): array
     {
         $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
 
         $sql = 'SELECT Zajecia.*,
                        Wykladowca.nazwisko_imie AS wykladowca_name,
                        Przedmiot.nazwa AS przedmiot_name,
+                       Przedmiot.forma AS forma_przedmiotu,
                        Sala_z_budynkiem.budynek_sala AS sala_name,
                        Grupa.nazwa AS grupa_name,
-                       Wydzial.nazwa AS wydzial_name
+                       Wydzial.nazwa AS wydzial_name,
+                       Tok_studiow.typ AS typ_studiow_name
                 FROM Zajecia
                 LEFT JOIN Wykladowca ON Zajecia.wykladowca_id = Wykladowca.id
                 LEFT JOIN Przedmiot ON Zajecia.przedmiot_id = Przedmiot.id
                 LEFT JOIN Sala_z_budynkiem ON Zajecia.sala_id = Sala_z_budynkiem.id
                 LEFT JOIN Grupa ON Zajecia.grupa_id = Grupa.id
                 LEFT JOIN Wydzial ON Zajecia.wydzial_id = Wydzial.id
+                LEFT JOIN Tok_studiow ON Zajecia.tok_studiow_id = Tok_studiow.id
                 WHERE 1=1';
 
         $params = [];
@@ -260,17 +374,23 @@ public function setStudentId(?int $student_id): void
             $params['wydzial'] = $wydzial;
         }
         if ($forma_przedmiotu != null) {
-            $sql .= ' AND Zajecia.forma_przedmiotu = :forma_przedmiotu';
+            $sql .= ' AND Przedmiot.forma = :forma_przedmiotu';
             $params['forma_przedmiotu'] = $forma_przedmiotu;
+        }
+        if ($typ_studiow != null) {
+            $sql .= ' AND Tok_studiow.typ = :typ_studiow';
+            $params['typ_studiow'] = $typ_studiow;
         }
         if ($semestr_studiow != null) {
             $sql .= ' AND Zajecia.semestr = :semestr_studiow';
             $params['semestr_studiow'] = $semestr_studiow;
         }
         if ($rok_studiow != null) {
-            $sql .= ' AND Zajecia.rok_studiow = :rok_studiow';
-            $params['rok_studiow'] = $rok_studiow;
+            $sql .= ' AND (Zajecia.semestr = :rok_studiow1 OR Zajecia.semestr = :rok_studiow2)';
+            $params['rok_studiow1'] = $rok_studiow * 2 - 1;
+            $params['rok_studiow2'] = $rok_studiow * 2;
         }
+
 
         $statement = $pdo->prepare($sql);
         $statement->execute($params);
@@ -283,6 +403,5 @@ public function setStudentId(?int $student_id): void
 
         return $zajecia;
     }
-
 
 }

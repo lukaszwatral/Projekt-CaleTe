@@ -28,6 +28,9 @@ ob_start(); ?>
         <label for="forma_przedmiotu">Forma Przedmiotu:</label>
         <input type="text" id="forma_przedmiotu" name="forma_przedmiotu" value="<?= htmlspecialchars($_GET['forma_przedmiotu'] ?? '') ?>">
 
+        <label for"typ_studiow">Typ Studiow:</label>
+        <input type="text" id="typ_studiow" name="typ_studiow" value="<?= htmlspecialchars($_GET['typ_studiow'] ?? '') ?>">
+
         <label for="semestr_studiow">Semestr Studiow:</label>
         <input type="text" id="semestr_studiow" name="semestr_studiow" value="<?= htmlspecialchars($_GET['semestr_studiow'] ?? '') ?>">
 
@@ -42,12 +45,13 @@ ob_start(); ?>
             <li>No results found.</li>
         <?php else: ?>
             <?php foreach ($zajecia as $zaj): ?>
-                <li><h3><?= $zaj->getId(), ". " , $zaj->getDataStart(), "-", $zaj->getDataKoniec(), ", wyk: ", $zaj->getWykladowcaId(), ", p: ", $zaj->getPrzedmiotId(), ", s: ", $zaj->getSalaId(), ", gr: ", $zaj->getGrupaId(), ", wydz: ", $zaj->getWydzialId(), ", typ: ", $zaj->getTokStudiowId(), ", sem: ", $zaj->getSemestr() ?></h3>
+                <li><h3><?= $zaj->getId(), ". " , $zaj->getDataStart(), "-", $zaj->getDataKoniec(), ", <br>Prowadzący: ", $zaj->getWykladowcaName(), ", <br>Przedmiot: ", $zaj->getPrzedmiotName(), ", Forma: ", $zaj->getFormaPrzedmiotu(), ", <br>Sala: ", $zaj->getSalaName(), ", Grupa: ", $zaj->getGrupaName(), ", <br>Wydział: ", $zaj->getWydzialName(), ", typ: ", $zaj->getTypStudiowName(), ", sem: ", $zaj->getSemestr(), ", rok: ", $zaj->getRokStudiow() ?></h3>
                 </li>
             <?php endforeach; ?>
         <?php endif; ?>
     </ul>
 
+    
 <?php $main = ob_get_clean();
 
 include __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'base.html.php';
