@@ -51,6 +51,13 @@ ob_start(); ?>
                 }
             }
 
+            var customEvent = {
+                title: 'Custom Event',
+                start: '2025-01-07T10:15:00',
+                end: '2025-01-07T12:00:00',
+                description: 'This is a custom event',
+                color: '#ff0000' // Optional: set a custom color for the event
+            };
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'timeGridWeek',
                 events: async function (fetchInfo, successCallback, failureCallback) {
@@ -61,7 +68,7 @@ ob_start(); ?>
                     console.log(`Fetching events from ${startStr} to ${endStr}`);  // Debugging
 
                     await fetchEvents(startStr, endStr);
-
+                    events.push(customEvent);
                     if (events.length > 0) {
                         successCallback(events);
                     } else {
