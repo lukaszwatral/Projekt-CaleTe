@@ -1,1 +1,3 @@
 1. Historia 10 ostatnich użytych filtrów
+
+Dodac do config.php start i koniec semestru, żeby się dało z tego dane wgrać do Scrape requesta.
