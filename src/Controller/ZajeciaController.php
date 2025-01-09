@@ -28,13 +28,68 @@ class ZajeciaController
         ]);
         return $html;
     }
+
     public function kalendarzAction(Templating $templating, Router $router): ?string
     {
-
         $html = $templating->render('zajecia/kalendarz.html.php', [
             'router' => $router,
         ]);
         return $html;
     }
+    public function getEvents(string $start, string $end): array
+    {
+        $zajecia = Zajecia::filteredFind(
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        );
 
+        $events = [];
+        foreach ($zajecia as $zaj) {
+            $events[] = [
+                'title' => $zaj->getPrzedmiotName(),
+                'start' => $zaj->getDataStart(),
+                'end' => $zaj->getDataKoniec(),
+                'description' => "Prowadzący: {$zaj->getWykladowcaName()}",
+                'color' => '#007bff',
+            ];
+        }
+
+        return $events;
+    }
+    public function filterEvents(array $filters): array
+    {
+        $zajecia = Zajecia::filteredFind(
+            $filters['wykladowca'] ?? null,
+            $filters['przedmiot'] ?? null,
+            $filters['sala'] ?? null,
+            $filters['grupa'] ?? null,
+            $filters['wydzial'] ?? null,
+            $filters['forma_przedmiotu'] ?? null,
+            $filters['typ_studiow'] ?? null,
+            $filters['semestr_studiow'] ?? null,
+            $filters['rok_studiow'] ?? null,
+            $filters['student'] ?? null
+        );
+
+        $events = [];
+        foreach ($zajecia as $zaj) {
+            $events[] = [
+                'title' => $zaj->getPrzedmiotName(),
+                'start' => $zaj->getDataStart(),
+                'end' => $zaj->getDataKoniec(),
+                'description' => "Prowadzący: {$zaj->getWykladowcaName()}",
+                'color' => '#007bff',
+            ];
+        }
+
+        return $events;
+    }
 }

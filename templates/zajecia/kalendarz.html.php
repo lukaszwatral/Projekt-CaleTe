@@ -10,6 +10,18 @@ ob_start(); ?>
 
     </form>
     <h1>KALENDARZ</h1>
+
+    <div class="button-container">
+        <button type="button" id="search-btn">Szukaj</button>
+        <button type="button" id="reset-filters">Wyczyść filtry</button>
+        <button type="button" id="toggle-view-btn">Zmiana zakresu wyświetlania</button>
+        <button type="button" id="calendar-format-btn">Zmiana sposobu wyświetlania</button>
+    </div>
+
+    <form id="filter-form" style="display: none;">
+        <?php include __DIR__ . '/../filter/_form.html.php'; ?>
+    </form>
+
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
     <!-- Include FullCalendar CSS from node_modules -->
     <link href="../../node_modules/@fullcalendar/main.min.css" rel="stylesheet" />
@@ -103,6 +115,50 @@ ob_start(); ?>
             });
 
             calendar.render();
+
+            document.getElementById('search-btn').addEventListener('click', () => {
+                const filters = {
+                    wykladowca: document.getElementById('wykladowca')?.value || '',
+                    sala: document.getElementById('sala')?.value || '',
+                    przedmiot: document.getElementById('przedmiot')?.value || '',
+                    grupa: document.getElementById('grupa')?.value || '',
+                    numer_albumu: document.getElementById('numer_albumu')?.value || '',
+                };
+
+                fetch('/index.php?action=kalendarz-filter', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(filters),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        calendar.removeAllEvents();
+                        calendar.addEventSource(data);
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+            document.getElementById('reset-filters').addEventListener('click', () => {
+                document.querySelectorAll('#filter-form input').forEach(input => input.value = '');
+                fetch('/index.php?action=kalendarz-events')
+                    .then(response => response.json())
+                    .then(data => {
+                        calendar.removeAllEvents();
+                        calendar.addEventSource(data);
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+            document.getElementById('toggle-view-btn').addEventListener('click', () => {
+                const views = ['timeGridWeek', 'dayGridMonth', 'listWeek'];
+                const currentView = calendar.view.type;
+                const nextView = views[(views.indexOf(currentView) + 1) % views.length];
+                calendar.changeView(nextView);
+            });
+            document.getElementById('calendar-format-btn').addEventListener('click', () => {
+                const views = ['timeGridWeek', 'timeGridDay', 'listWeek'];
+                const currentView = calendar.view.type;
+                const nextView = views[(views.indexOf(currentView) + 1) % views.length];
+                calendar.changeView(nextView);
+            });
         });
     </script>
 <?php $main = ob_get_clean();

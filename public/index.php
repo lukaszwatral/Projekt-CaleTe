@@ -50,6 +50,14 @@ switch ($action) {
         $controller = new \App\Controller\ZajeciaController();
         $view = $controller->kalendarzAction($templating, $router);
         break;
+    case 'kalendarz-events':
+        $controller = new \App\Controller\ZajeciaController();
+        echo json_encode($controller->getEvents($_GET['start'], $_GET['end']));
+        break;
+    case 'kalendarz-filter':
+        $controller = new \App\Controller\ZajeciaController();
+        echo json_encode($controller->filterEvents(json_decode(file_get_contents('php://input'), true)));
+        break;
     default:
         $view = 'Not found';
         break;
