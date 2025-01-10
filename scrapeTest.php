@@ -27,8 +27,6 @@ try {
     foreach($departmentTable as $department){
         $scrapeData->scrapeData($department);
     }
-//    $department = 'WI';
-//    $scrapeData->scrapeData($department);
 
     echo "Data scraped and inserted successfully.";
 } catch (PDOException $e) {

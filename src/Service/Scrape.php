@@ -1,6 +1,10 @@
 <?php
 namespace App\Service;
+use App\Model\Department;
+use App\Model\RoomBuilding;
 use App\Service\Config;
+
+//@todo Modele, zmiany nazwy tabel
 
 class Scrape
 {
@@ -29,13 +33,13 @@ class Scrape
             if (isset($item['wydzial']) && isset($item['wydz_sk'])) {
                 $departValue = $item['wydzial'];
                 $departShortValue = $item['wydz_sk'];
-                $this->insertWydzial($departValue, $departShortValue);
+                $this->insertDepartment($departValue, $departShortValue);
             }
             //Sala z budynkiem
             if(isset($item['room'])){
                 $room = $item['room'];
-                $wydzial = $item['wydzial'];
-                $this->insertSalaBudynek($room, $wydzial);
+                $department = $item['wydzial'];
+                $this->insertRoomBuilding($room, $department);
             }
             //Tok studiów
             if(isset($item['typ_sk']) || isset($item['rodzaj_sk'])){
@@ -113,46 +117,18 @@ class Scrape
         }
     }
 
-    private function insertWydzial(string $wydzial, string $wydz_sk)
-    {
-        // Check if department already exist
-        $stmt = $this->pdo->prepare("SELECT id FROM Wydzial WHERE nazwa = :wydzial AND skrot = :wydz_sk");
-        $stmt->bindParam(':wydzial', $wydzial);
-        $stmt->bindParam(':wydz_sk', $wydz_sk);
-        $stmt->execute();
-        $result = $stmt->fetch();
-
-        if (!$result) {
-            // Insert new department if not exist
-            $stmt = $this->pdo->prepare("INSERT INTO Wydzial (nazwa, skrot) VALUES (:wydzial, :wydz_sk)");
-            $stmt->bindParam(':wydzial', $wydzial);
-            $stmt->bindParam(':wydz_sk', $wydz_sk);
-            $stmt->execute();
+    private function insertDepartment(string $wydzial, string $wydz_sk){
+        $departmentModel = new Department();
+        $result = $departmentModel->findDepartment($wydzial, $wydz_sk);
+        if(!$result) {
+            $departmentModel->insert($wydzial, $wydz_sk);
         }
     }
-    private function insertSalaBudynek(string $room, string $wydzial){
-
-        $stmt = $this->pdo->prepare("SELECT id FROM Wydzial WHERE nazwa = :wydzial");
-        $stmt->bindParam(':wydzial', $wydzial);
-        $stmt->execute();
-        $result = $stmt->fetch();
-
-        if($result){
-            $wydzial_id = $result['id'];
-            $stmt = $this->pdo->prepare("SELECT id FROM Sala_z_budynkiem WHERE budynek_sala = :room AND wydzial_id = :wydzial_id");
-            $stmt->bindParam(':room', $room);
-            $stmt->bindParam(':wydzial_id', $wydzial_id);
-            $stmt->execute();
-            $result = $stmt->fetch();
-            if(!$result){
-                $stmt = $this->pdo->prepare("INSERT INTO Sala_z_budynkiem (budynek_sala, wydzial_id) VALUES (:room, :wydzial_id)");
-                $stmt->bindParam(':room', $room);
-                $stmt->bindParam(':wydzial_id', $wydzial_id);
-                $stmt->execute();
-            }
-        }
-        else{
-            throw new \Exception("Department not found");
+    private function insertRoomBuilding(string $room, string $department){
+        $roomBuildingModel = new RoomBuilding();
+        $result = $roomBuildingModel->findRoom($room, $department);
+        if(!$result) {
+            $roomBuildingModel->insert($room, $department);
         }
     }
     private function insertTokStudiow(string $typ_sk, string $tryb_sk, string $tryb, string $typ)

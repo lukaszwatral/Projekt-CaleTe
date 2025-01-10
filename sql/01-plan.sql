@@ -1,87 +1,90 @@
 -- Do czyszczenia bazy jak kiedyś coś nie zadziała
--- DROP TABLE IF EXISTS Wydzial;
--- DROP TABLE IF EXISTS Sala_z_budynkiem;
--- DROP TABLE IF EXISTS Tok_studiow;
--- DROP TABLE IF EXISTS Przedmiot;
--- DROP TABLE IF EXISTS Grupa;
+-- DROP TABLE IF EXISTS Department;
+-- DROP TABLE IF EXISTS RoomBuilding;
+-- DROP TABLE IF EXISTS StudyCourse;
+-- DROP TABLE IF EXISTS Subject;
+-- DROP TABLE IF EXISTS StudyGroup;
 -- DROP TABLE IF EXISTS Student;
--- DROP TABLE IF EXISTS Grupa_Student;
--- DROP TABLE IF EXISTS Wykladowca;
--- DROP TABLE IF EXISTS Zajecia;
+-- DROP TABLE IF EXISTS GroupStudent;
+-- DROP TABLE IF EXISTS Teacher;
+-- DROP TABLE IF EXISTS Lesson;
 
-CREATE TABLE Wydzial (
+CREATE TABLE Department (
      id INTEGER PRIMARY KEY AUTOINCREMENT,
-     nazwa TEXT NOT NULL,
-     skrot TEXT NOT NULL
+     name TEXT NOT NULL,
+     shortName TEXT NOT NULL
 );
 
-CREATE TABLE Sala_z_budynkiem (
+CREATE TABLE RoomBuilding (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    budynek_sala TEXT NOT NULL,
-    wydzial_id INTEGER NOT NULL,
-    FOREIGN KEY (wydzial_id) REFERENCES Wydzial(id)
+    buildingRoom TEXT NOT NULL,
+    departmentId INTEGER NOT NULL,
+    FOREIGN KEY (departmentId) REFERENCES Department(id)
 );
 
-CREATE TABLE Tok_studiow (
+CREATE TABLE StudyCourse (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    typ TEXT NOT NULL, --licencjackie, magisterskie, doktoranckie
-    tryb TEXT NOT NULL, --stacjonarne, niestacjonarne
-    typ_skrot TEXT NOT NULL,
-    tryb_skrot TEXT NOT NULL
+    tokName TEXT NOT NULL,
+    shortType TEXT NOT NULL, --licencjackie, magisterskie, doktoranckie
+    shortKind TEXT NOT NULL, --stacjonarne, niestacjonarne
+    specialisation TEXT,
+    major TEXT NOT NULL
 );
 
-CREATE TABLE Przedmiot (
+CREATE TABLE Subject (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    nazwa TEXT NOT NULL,
-    forma TEXT NOT NULL, --wykład, ćwiczenia, laboratoria
+    name TEXT NOT NULL,
+    form TEXT NOT NULL, --wykład, ćwiczenia, laboratoria
 --     opis TEXT NOT NULL,
-    tok_studiow_id INTEGER NOT NULL,
-    FOREIGN KEY (tok_studiow_id) REFERENCES Tok_studiow(id)
+    studyCourseId INTEGER NOT NULL,
+    FOREIGN KEY (studyCourseId) REFERENCES studyCourse(id)
 );
 
-CREATE TABLE Grupa (
+CREATE TABLE StudyGroup (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    nazwa TEXT NOT NULL
+    name TEXT NOT NULL
 );
 
 CREATE TABLE Student (
     id INTEGER PRIMARY KEY --id to numer albumu
+    studyCourseId INTEGER NOT NULL,
+    departmentId INTEGER NOT NULL,
+    FOREIGN KEY (studyCourseId) REFERENCES StudyCourse(id),
+    FOREIGN KEY (departmentId) REFERENCES Department(id)
 );
 
-CREATE TABLE Grupa_Student(
-    grupa_id INTEGER NOT NULL,
-    student_id INTEGER NOT NULL,
-    FOREIGN KEY (grupa_id) REFERENCES Grupa(id),
-    FOREIGN KEY (student_id) REFERENCES Student(id)
+CREATE TABLE GroupStudent(
+    groupId INTEGER NOT NULL,
+    studentId INTEGER NOT NULL,
+    FOREIGN KEY (groupId) REFERENCES StudyGroup(id),
+    FOREIGN KEY (studentId) REFERENCES Student(id)
 );
 
-CREATE TABLE Wykladowca (
+CREATE TABLE Teacher (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    nazwisko_imie TEXT NOT NULL
---     imie TEXT NOT NULL,
---     nazwisko TEXT NOT NULL,
---     tytul TEXT NOT NULL,
+    firstName TEXT NOT NULL,
+    lastName TEXT NOT NULL,
+    title TEXT NOT NULL
 --     zastepca text,
 );
 
-CREATE TABLE Zajecia(
+CREATE TABLE Lesson(
     id INTEGER PRIMARY KEY,
 --     opis
-    data_start TEXT NOT NULL,
-    data_koniec TEXT NOT NULL,
-    zastepca TEXT,
-    semestr INTEGER NOT NULL,
-    wykladowca_id INTEGER NOT NULL,
-    wydzial_id INTEGER NOT NULL,
-    grupa_id INTEGER NOT NULL,
-    tok_studiow_id INTEGER NOT NULL,
-    przedmiot_id INTEGER NOT NULL,
-    sala_id INTEGER NOT NULL,
-    student_id INTEGER,
-    FOREIGN KEY (wykladowca_id) REFERENCES Wykladowca(id),
-    FOREIGN KEY (wydzial_id) REFERENCES Wydzial(id),
-    FOREIGN KEY (grupa_id) REFERENCES Grupa(id),
-    FOREIGN KEY (tok_studiow_id) REFERENCES Tok_studiow(id),
-    FOREIGN KEY (przedmiot_id) REFERENCES Przedmiot(id),
-    FOREIGN KEY (sala_id) REFERENCES Sala_z_budynkiem(id)
+    dateStart TEXT NOT NULL,
+    dateEnd TEXT NOT NULL,
+    teacherCover TEXT,
+    semester INTEGER NOT NULL,
+    teacherId INTEGER NOT NULL,
+    departmentId INTEGER NOT NULL,
+    groupId INTEGER NOT NULL,
+    studyCourseId INTEGER NOT NULL,
+    subjectId INTEGER NOT NULL,
+    roomId INTEGER NOT NULL,
+    FOREIGN KEY (teacherId) REFERENCES Teacher(id),
+    FOREIGN KEY (departmentId) REFERENCES Department(id),
+    FOREIGN KEY (groupId) REFERENCES StudyGroup(id),
+    FOREIGN KEY (studyCourseId) REFERENCES StudyCourse(id),
+    FOREIGN KEY (subjectId) REFERENCES Subject(id),
+    FOREIGN KEY (roomId) REFERENCES RoomBuilding(id)
 )
