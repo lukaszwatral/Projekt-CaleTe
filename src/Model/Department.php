@@ -70,11 +70,16 @@ class Department{
         return $stmt->fetch() ? self::fromArray($stmt->fetch()) : null;
     }
 
-    public function insert(string $name, string $shortName){
+    public function save(){
         $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
-        $stmt = $pdo->prepare('INSERT INTO Department (name, shortName) VALUES (:name, :shortName)');
-        $stmt->bindParam(':name', $name);
-        $stmt->bindParam(':shortName', $shortName);
-        $stmt->execute();
+        if(!$this->getId()){
+            $stmt = $pdo->prepare('INSERT INTO Department (name, shortName) VALUES (:name, :shortName)');
+            $stmt->execute(['name' => $this->getName(), 'shortName' => $this->getShortName()]);
+            $this->setId($pdo->lastInsertId());
+        }
+        else{
+            $stmt = $pdo->prepare('UPDATE Department SET name = :name, shortName = :shortName WHERE id = :id');
+            $stmt->execute(['name' => $this->getName(), 'shortName' => $this->getShortName(), 'id' => $this->getId()]);
+        }
     }
 }

@@ -46,7 +46,7 @@ CREATE TABLE StudyGroup (
 );
 
 CREATE TABLE Student (
-    id INTEGER PRIMARY KEY --id to numer albumu
+    id INTEGER PRIMARY KEY, --id to numer albumu
     studyCourseId INTEGER NOT NULL,
     departmentId INTEGER NOT NULL,
     FOREIGN KEY (studyCourseId) REFERENCES StudyCourse(id),

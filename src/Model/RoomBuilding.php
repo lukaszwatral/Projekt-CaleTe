@@ -69,11 +69,17 @@ class RoomBuilding{
         return $stmt->fetch() ? self::fromArray($stmt->fetch()) : null;
     }
 
-    public function insert(string $room, int $departmentId){
+    public function save(){
         $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
-        $stmt = $pdo->prepare('INSERT INTO RoomBuilding (buildingRoom, departmentId) VALUES (:buildingRoom, :departmentId)');
-        $stmt->bindParam(':buildingRoom', $room);
-        $stmt->bindParam(':departmentId', $departmentId);
-        $stmt->execute();
+
+        if(!$this->getId()){
+            $stmt = $pdo->prepare('INSERT INTO RoomBuilding (buildingRoom, departmentId) VALUES (:buildingRoom, :departmentId)');
+            $stmt->execute(['buildingRoom' => $this->getBuildingRoom(), 'departmentId' => $this->getDepartmentId()]);
+            $this->setId((int)$pdo->lastInsertId());
+        }
+        else{
+            $stmt = $pdo->prepare('UPDATE RoomBuilding SET buildingRoom = :buildingRoom, departmentId = :departmentId WHERE id = :id');
+            $stmt->execute(['buildingRoom' => $this->getBuildingRoom(), 'departmentId' => $this->getDepartmentId(), 'id' => $this->getId()]);
+        }
     }
 }
