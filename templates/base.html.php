@@ -9,6 +9,7 @@
     <title><?= $title ?? 'Custom Framework' ?></title>
 </head>
 <body <?= isset($bodyClass) ? "class='$bodyClass'" : '' ?>>
+<header><?php require(__DIR__ . DIRECTORY_SEPARATOR . 'header.html.php') ?></header>
 <!--<nav>--><?php //require(__DIR__ . DIRECTORY_SEPARATOR . 'nav.html.php') ?><!--</nav>-->
 <main><?= $main ?? null ?></main>
 <footer>&copy;<?= date('Y') ?> Custom Framework</footer>

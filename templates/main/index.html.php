@@ -34,8 +34,6 @@ ob_start(); ?>
         <input type="text" id="major" name="major" value="<?= htmlspecialchars($_GET['major'] ?? '') ?>"><br>
         <label for="specialization">Specjalizacja:</label><br>
         <input type="text" id="specialization" name="specialization" value="<?= htmlspecialchars($_GET['specialization'] ?? '') ?>"><br>
-
-        <button type="submit">Filter</button>
     </form>
 
     <div class="button-container">
@@ -43,16 +41,16 @@ ob_start(); ?>
         <button type="button" id="reset-filters">Wyczyść filtry</button>
     </div>
 
-    <ul class="index-list">
-        <?php if (empty($filteredLessons)): ?>
-            <li>No results found.</li>
-        <?php else: ?>
-            <?php foreach ($filteredLessons as $filteredLesson): ?>
-                <li><h3><?= $filteredLesson->getId(), ". " , $filteredLesson->getDateStart(), "-", $filteredLesson->getDateEnd(), ", <br>Prowadzący: ", $filteredLesson->getTeacherName(), ", <br>Przedmiot: ", $filteredLesson->getSubjectName(), ", Forma: ", $filteredLesson->getSubjectForm(), ", <br>Sala: ", $filteredLesson->getClassroomName(), ", Grupa: ", $filteredLesson->getStudyCourseName(), ", <br>Wydział: ", $filteredLesson->getDepartmentName(), ", Tok: ", $filteredLesson->getStudyCourseId(), ", sem: ", $filteredLesson->getSemester(), ", rok: ", $filteredLesson->getYearOfStudy(), ", <br>Kierunek: ", $filteredLesson->getMajor(), ", Specjalizacja: ", $filteredLesson->getSpecialization() ?></h3>
-                </li>
-            <?php endforeach; ?>
-        <?php endif; ?>
-    </ul>
+<!--    <ul class="index-list">-->
+<!--        --><?php //if (empty($filteredLessons)): ?>
+<!--            <li>No results found.</li>-->
+<!--        --><?php //else: ?>
+<!--            --><?php //foreach ($filteredLessons as $filteredLesson): ?>
+<!--                <li><h3>--><?php //= $filteredLesson->getId(), ". " , $filteredLesson->getDateStart(), "-", $filteredLesson->getDateEnd(), ", <br>Prowadzący: ", $filteredLesson->getTeacherName(), ", <br>Przedmiot: ", $filteredLesson->getSubjectName(), ", Forma: ", $filteredLesson->getSubjectForm(), ", <br>Sala: ", $filteredLesson->getClassroomName(), ", Grupa: ", $filteredLesson->getStudyCourseName(), ", <br>Wydział: ", $filteredLesson->getDepartmentName(), ", Tok: ", $filteredLesson->getStudyCourseId(), ", sem: ", $filteredLesson->getSemester(), ", rok: ", $filteredLesson->getYearOfStudy(), ", <br>Kierunek: ", $filteredLesson->getMajor(), ", Specjalizacja: ", $filteredLesson->getSpecialization() ?><!--</h3>-->
+<!--                </li>-->
+<!--            --><?php //endforeach; ?>
+<!--        --><?php //endif; ?>
+<!--    </ul>-->
 
     <h1>KALENDARZ</h1>
 
