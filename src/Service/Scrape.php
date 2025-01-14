@@ -263,13 +263,13 @@ class Scrape
                                     $lessonModel->setDateStart($dateSstart);
                                     $lessonModel->setDateEnd($dateEnd);
                                     $lessonModel->setTeacherCover($cover);
+                                    $lessonModel->setSemester($semester);
                                     $lessonModel->setTeacherId($teacherId);
                                     $lessonModel->setDepartmentId($departmentId);
                                     $lessonModel->setGroupId($groupId);
                                     $lessonModel->setStudyCourseId($studyCourseId);
                                     $lessonModel->setSubjectId($subjectId);
                                     $lessonModel->setRoomId($roomId);
-                                    $lessonModel->setSemester($semester);
                                     $lessonModel->save();
                                 }
                             }

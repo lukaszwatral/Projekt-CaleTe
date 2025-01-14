@@ -162,36 +162,25 @@ class Lesson{
 
     public function save(){
         $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
-        if(!$this->getId()){
+        $existingLesson = $this->findLesson($this->getId());
+
+        if (!$existingLesson) {
             $stmt = $pdo->prepare('INSERT INTO Lesson (id, dateStart, dateEnd, teacherCover, semester, teacherId, departmentId, groupId, studyCourseId, subjectId, roomId) VALUES (:id, :dateStart, :dateEnd, :teacherCover, :semester, :teacherId, :departmentId, :groupId, :studyCourseId, :subjectId, :roomId)');
-            $stmt->execute([
-                'id' => $this->getId(),
-                'dateStart' => $this->getDateStart(),
-                'dateEnd' => $this->getDateEnd(),
-                'teacherCover' => $this->getTeacherCover(),
-                'semester' => $this->getSemester(),
-                'teacherId' => $this->getTeacherId(),
-                'departmentId' => $this->getDepartmentId(),
-                'groupId' => $this->getGroupId(),
-                'studyCourseId' => $this->getStudyCourseId(),
-                'subjectId' => $this->getSubjectId(),
-                'roomId' => $this->getRoomId()
-            ]);
         } else {
             $stmt = $pdo->prepare('UPDATE Lesson SET dateStart = :dateStart, dateEnd = :dateEnd, teacherCover = :teacherCover, semester = :semester, teacherId = :teacherId, departmentId = :departmentId, groupId = :groupId, studyCourseId = :studyCourseId, subjectId = :subjectId, roomId = :roomId WHERE id = :id');
-            $stmt->execute([
-                'id' => $this->getId(),
-                'dateStart' => $this->getDateStart(),
-                'dateEnd' => $this->getDateEnd(),
-                'teacherCover' => $this->getTeacherCover(),
-                'semester' => $this->getSemester(),
-                'teacherId' => $this->getTeacherId(),
-                'departmentId' => $this->getDepartmentId(),
-                'groupId' => $this->getGroupId(),
-                'studyCourseId' => $this->getStudyCourseId(),
-                'subjectId' => $this->getSubjectId(),
-                'roomId' => $this->getRoomId()
-            ]);
         }
+        $stmt->execute([
+            'id' => $this->getId(),
+            'dateStart' => $this->getDateStart(),
+            'dateEnd' => $this->getDateEnd(),
+            'teacherCover' => $this->getTeacherCover(),
+            'semester' => $this->getSemester(),
+            'teacherId' => $this->getTeacherId(),
+            'departmentId' => $this->getDepartmentId(),
+            'groupId' => $this->getGroupId(),
+            'studyCourseId' => $this->getStudyCourseId(),
+            'subjectId' => $this->getSubjectId(),
+            'roomId' => $this->getRoomId()
+        ]);
     }
 }
