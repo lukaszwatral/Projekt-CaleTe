@@ -1,29 +1,31 @@
 <?php
 namespace App\Controller;
 
-use App\Model\Zajecia;
+use App\Model\Filter;
 use App\Service\Router;
 use App\Service\Templating;
 
-class ZajeciaController
+class FilterController
 {
     public function indexAction(Templating $templating, Router $router): ?string
     {
-        $wykladowca = $_GET['wykladowca'] ?? null;
-        $przedmiot = $_GET['przedmiot'] ?? null;
-        $sala = $_GET['sala'] ?? null;
-        $grupa = $_GET['grupa'] ?? null;
-        $wydzial = $_GET['wydzial'] ?? null;
-        $forma_przedmiotu = $_GET['forma_przedmiotu'] ?? null;
-        $typ_studiow = $_GET['typ_studiow'] ?? null;
-        $semestr_studiow = $_GET['semestr_studiow'] ?? null;
-        $rok_studiow = $_GET['rok_studiow'] ?? null;
+        $teacher = $_GET['teacher'] ?? null;
+        $subject = $_GET['subject'] ?? null;
+        $classroom = $_GET['classroom'] ?? null;
+        $studyGroup = $_GET['studyGroup'] ?? null;
+        $department = $_GET['department'] ?? null;
+        $subjectForm = $_GET['subjectForm'] ?? null;
+        $studyCourse = $_GET['studyCourse'] ?? null;
+        $semester = $_GET['semester'] ?? null;
+        $yearOfStudy = $_GET['yearOfStudy'] ?? null;
         $student = $_GET['student'] ?? null;
+        $major = $_GET['major'] ?? null;
+        $specialization = $_GET['specialization'] ?? null;
 
-        $zajecia = Zajecia::filteredFind($wykladowca, $przedmiot, $sala, $grupa, $wydzial, $forma_przedmiotu, $typ_studiow, $semestr_studiow, $rok_studiow, $student);
+        $filteredLessons = Filter::filteredFind($teacher, $subject, $classroom, $studyGroup, $department, $subjectForm, $studyCourse, $semester, $yearOfStudy, $student, $major, $specialization);
 
-        $html = $templating->render('zajecia/index.html.php', [
-            'zajecia' => $zajecia,
+        $html = $templating->render('main/index.html.php', [
+            'filteredLessons' => $filteredLessons,
             'router' => $router,
         ]);
         return $html;
@@ -31,14 +33,14 @@ class ZajeciaController
 
     public function kalendarzAction(Templating $templating, Router $router): ?string
     {
-        $html = $templating->render('zajecia/kalendarz.html.php', [
+        $html = $templating->render('main/kalendarz.html.php', [
             'router' => $router,
         ]);
         return $html;
     }
     public function getEvents(string $start, string $end): array
     {
-        $zajecia = Zajecia::filteredFind(
+        $zajecia = Filter::filteredFind(
             null,
             null,
             null,
@@ -66,7 +68,7 @@ class ZajeciaController
     }
     public function filterEvents(array $filters): array
     {
-        $zajecia = Zajecia::filteredFind(
+        $zajecia = Filter::filteredFind(
             $filters['wykladowca'] ?? null,
             $filters['przedmiot'] ?? null,
             $filters['sala'] ?? null,

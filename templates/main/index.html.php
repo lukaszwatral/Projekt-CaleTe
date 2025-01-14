@@ -1,54 +1,49 @@
 <?php
 
-/** @var \App\Model\Zajecia[] $zajecia */
+/** @var \App\Model\Filter[] $filteredLessons */
 /** @var \App\Service\Router $router */
 
-$title = 'Zajecia';
+$title = 'Filter';
 $bodyClass = 'index';
 
 ob_start(); ?>
     <h1>Zajecia List</h1>
 
-    <form action="<?= $router->generatePath('zajecia-index') ?>" method="get">
-        <label for="wykladowca">Wykladowca:</label>
-        <input type="text" id="wykladowca" name="wykladowca" value="<?= htmlspecialchars($_GET['wykladowca'] ?? '') ?>">
-
-        <label for="przedmiot">Przedmiot:</label>
-        <input type="text" id="przedmiot" name="przedmiot" value="<?= htmlspecialchars($_GET['przedmiot'] ?? '') ?>">
-
-        <label for="sala">Sala:</label>
-        <input type="text" id="sala" name="sala" value="<?= htmlspecialchars($_GET['sala'] ?? '') ?>">
-
-        <label for="grupa">Grupa:</label>
-        <input type="text" id="grupa" name="grupa" value="<?= htmlspecialchars($_GET['grupa'] ?? '') ?>">
-
-        <label for="wydzial">Wydzial:</label>
-        <input type="text" id="wydzial" name="wydzial" value="<?= htmlspecialchars($_GET['wydzial'] ?? '') ?>">
-
-        <label for="forma_przedmiotu">Forma Przedmiotu:</label>
-        <input type="text" id="forma_przedmiotu" name="forma_przedmiotu" value="<?= htmlspecialchars($_GET['forma_przedmiotu'] ?? '') ?>">
-
-        <label for"typ_studiow">Typ Studiow:</label>
-        <input type="text" id="typ_studiow" name="typ_studiow" value="<?= htmlspecialchars($_GET['typ_studiow'] ?? '') ?>">
-
-        <label for="semestr_studiow">Semestr Studiow:</label>
-        <input type="text" id="semestr_studiow" name="semestr_studiow" value="<?= htmlspecialchars($_GET['semestr_studiow'] ?? '') ?>">
-
-        <label for="rok_studiow">Rok Studiow:</label>
-        <input type="text" id="rok_studiow" name="rok_studiow" value="<?= htmlspecialchars($_GET['rok_studiow'] ?? '') ?>">
-
-        <label for="student">Student:</label>
-        <input type="text" id="student" name="student" value="<?= htmlspecialchars($_GET['student'] ?? '') ?>">
+    <form action="<?= $router->generatePath('main-index') ?>" method="get">
+        <label for="teacher">Wykladowca:</label><br>
+        <input type="text" id="teacher" name="teacher" value="<?= htmlspecialchars($_GET['teacher'] ?? '') ?>"><br>
+        <label for="room">Sala:</label><br>
+        <input type="text" id="room" name="room" value="<?= htmlspecialchars($_GET['classroom'] ?? '') ?>"><br>
+        <label for="subject">Przedmiot:</label><br>
+        <input type="text" id="subject" name="subject" value="<?= htmlspecialchars($_GET['subject'] ?? '') ?>"><br>
+        <label for="studyGroup">Grupa:</label><br>
+        <input type="text" id="studyGroup" name="studyGroup" value="<?= htmlspecialchars($_GET['studyGroup'] ?? '') ?>"><br>
+        <label for="student">Numer albumu:</label><br>
+        <input type="text" id="student" name="student" value="<?= htmlspecialchars($_GET['student'] ?? '') ?>"><br>
+        <label for="department">Wydzial:</label><br>
+        <input type="text" id="department" name="department" value="<?= htmlspecialchars($_GET['department'] ?? '') ?>"><br>
+        <label for="subjectForm">Forma przedmiotu:</label><br>
+        <input type="text" id="subjectForm" name="subjectForm" value="<?= htmlspecialchars($_GET['subjectForm'] ?? '') ?>"><br>
+        <label for="studyCourse">Typ studiow:</label><br>
+        <input type="text" id="studyCourse" name="studyCourse" value="<?= htmlspecialchars($_GET['studyCourse'] ?? '') ?>"><br>
+        <label for="semester">Semestr:</label><br>
+        <input type="text" id="semester" name="semester" value="<?= htmlspecialchars($_GET['semester'] ?? '') ?>"><br>
+        <label for="yearOfStudy">Rok studiow:</label><br>
+        <input type="text" id="yearOfStudy" name="yearOfStudy" value="<?= htmlspecialchars($_GET['yearOfStudy'] ?? '') ?>"><br>
+        <label for="major">Kierunek:</label><br>
+        <input type="text" id="major" name="major" value="<?= htmlspecialchars($_GET['major'] ?? '') ?>"><br>
+        <label for="specialization">Specjalizacja:</label><br>
+        <input type="text" id="specialization" name="specialization" value="<?= htmlspecialchars($_GET['specialization'] ?? '') ?>"><br>
 
         <button type="submit">Filter</button>
     </form>
 
     <ul class="index-list">
-        <?php if (empty($zajecia)): ?>
+        <?php if (empty($filteredLessons)): ?>
             <li>No results found.</li>
         <?php else: ?>
-            <?php foreach ($zajecia as $zaj): ?>
-                <li><h3><?= $zaj->getId(), ". " , $zaj->getDataStart(), "-", $zaj->getDataKoniec(), ", <br>Prowadzący: ", $zaj->getWykladowcaName(), ", <br>Przedmiot: ", $zaj->getPrzedmiotName(), ", Forma: ", $zaj->getFormaPrzedmiotu(), ", <br>Sala: ", $zaj->getSalaName(), ", Grupa: ", $zaj->getGrupaName(), ", <br>Wydział: ", $zaj->getWydzialName(), ", typ: ", $zaj->getTypStudiowName(), ", sem: ", $zaj->getSemestr(), ", rok: ", $zaj->getRokStudiow() ?></h3>
+            <?php foreach ($filteredLessons as $filteredLesson): ?>
+                <li><h3><?= $filteredLesson->getId(), ". " , $filteredLesson->getDateStart(), "-", $filteredLesson->getDateEnd(), ", <br>Prowadzący: ", $filteredLesson->getTeacherName(), ", <br>Przedmiot: ", $filteredLesson->getSubjectName(), ", Forma: ", $filteredLesson->getSubjectForm(), ", <br>Sala: ", $filteredLesson->getClassroomName(), ", Grupa: ", $filteredLesson->getStudyCourseName(), ", <br>Wydział: ", $filteredLesson->getDepartmentName(), ", Tok: ", $filteredLesson->getStudyCourseId(), ", sem: ", $filteredLesson->getSemester(), ", rok: ", $filteredLesson->getYearOfStudy(), ", <br>Kierunek: ", $filteredLesson->getMajor(), ", Specjalizacja: ", $filteredLesson->getSpecialization() ?></h3>
                 </li>
             <?php endforeach; ?>
         <?php endif; ?>
