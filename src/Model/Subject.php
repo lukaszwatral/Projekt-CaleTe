@@ -74,10 +74,13 @@ class Subject{
 
     public function findSubject(string $name, string $form, int $studyCourseId): ?Subject{
         $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
-        $stmt = $pdo->prepare('SELECT id FROM Subject WHERE name = :name AND form = :form AND studyCourseId = :studyCourseId');
+        $stmt = $pdo->prepare('SELECT * FROM Subject WHERE name = :name AND form = :form AND studyCourseId = :studyCourseId');
         $stmt->execute(['name' => $name, 'form' => $form, 'studyCourseId' => $studyCourseId]);
-        $subjectArray = $stmt->fetch();
-        return $subjectArray ? self::fromArray($subjectArray) : null;
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if ($result === false) {
+            return null; // No department found
+        }
+        return self::fromArray($result);
     }
 
     public function save(){

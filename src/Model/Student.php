@@ -63,9 +63,13 @@ class Student{
 
     public function findStudent(int $id): ?Student{
         $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
-        $stmt = $pdo->prepare('SELECT id FROM Student WHERE id = :id');
+        $stmt = $pdo->prepare('SELECT * FROM Student WHERE id = :id');
         $stmt->execute(['id' => $id]);
-        return $stmt->fetch() ? self::fromArray($stmt->fetch()) : null;
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if ($result === false) {
+            return null; // No department found
+        }
+        return self::fromArray($result);
     }
 
     public function save(){

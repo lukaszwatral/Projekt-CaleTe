@@ -61,13 +61,16 @@ class Department{
         return $departments;
     }
 
-    public function findDepartment(string $name, string $shortName): ?Department{
+    public function findDepartment(string $name): ?Department {
         $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
-        $stmt = $pdo->prepare('SELECT id FROM Department WHERE name = :name AND shortName = :shortName');
+        $stmt = $pdo->prepare('SELECT * FROM Department WHERE name = :name');
         $stmt->bindParam(':name', $name);
-        $stmt->bindParam(':shortName', $shortName);
         $stmt->execute();
-        return $stmt->fetch() ? self::fromArray($stmt->fetch()) : null;
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if ($result === false) {
+            return null; // No department found
+        }
+        return self::fromArray($result);
     }
 
     public function save(){

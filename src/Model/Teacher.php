@@ -70,11 +70,15 @@ class Teacher{
         return $teachers;
     }
 
-    public function findTeacher(string $firstName, string $lastName, string $title): ?Teacher{
+    public function findTeacher(string $firstName, string $lastName, ?string $title): ?Teacher{
         $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
         $stmt = $pdo->prepare('SELECT * FROM Teacher WHERE firstName = :firstName AND lastName = :lastName AND title = :title');
         $stmt->execute(['firstName' => $firstName, 'lastName' => $lastName, 'title' => $title]);
-        return $stmt->fetch() ? self::fromArray($stmt->fetch()) : null;
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if ($result === false) {
+            return null; // No department found
+        }
+        return self::fromArray($result);
     }
 
     public function save(){

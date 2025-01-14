@@ -1,6 +1,6 @@
 <?php
 namespace App\Service;
-use App\Service\Config;
+
 use App\Model\Department;
 use App\Model\RoomBuilding;
 use App\Model\GroupStudent;
@@ -9,6 +9,7 @@ use App\Model\StudyCourse;
 use App\Model\StudyGroup;
 use App\Model\Subject;
 use App\Model\Teacher;
+use App\Model\Lesson;
 
 //@todo Modele, zmiany nazwy tabel
 
@@ -45,8 +46,7 @@ class Scrape
             if(isset($item['room'])){
                 $room = $item['room'];
                 $depart = $item['wydzial'];
-                $departShort = $item['wydz_sk'];
-                $this->insertRoomBuilding($room, $depart, $departShort);
+                $this->insertRoomBuilding($room, $depart);
             }
             //Tok studiów
             if(isset($item['tok_name'])){
@@ -109,44 +109,70 @@ class Scrape
                 $firstName = $item['imie'];
                 $lastName = $item['nazwisko'];
                 $title = $item['tytul'];
+                if($title == null){
+                    $title = "Brak";
+                }
                 $this->insertTeacher($firstName, $lastName, $title);
             }
             //Zajęcia
             if(isset($item['id'])){
                 $id = $item['id'];
-                $data_start = $item['start'];
-                $data_koniec = $item['end'];
-                $zastepca = $item['worker_cover'];
-                if($zastepca == null){
-                    $zastepca = "Brak";
+                $dateSstart = $item['start'];
+                $dateEnd = $item['end'];
+                $cover = $item['worker_cover'];
+                if($cover == null){
+                    $cover = "Brak";
                 }
-                $wykladowca = $item['worker'];
-                $wydzial = $item['wydzial'];
-                $grupa = $item['group_name'];
-                $tok_studiow = $item['typ_sk'];
-                if($tok_studiow == null){
-                    $tok_studiow = "Brak";
+                $teacherFirstName = $item['imie'];
+                $teacherLastName = $item['nazwisko'];
+                $teacherTitle = $item['tytul'];
+                if($teacherTitle == null){
+                    $teacherTitle = "Brak";
                 }
-                $przedmiot = $item['subject'];
-                $forma = $item['lesson_form'];
-                $sala_budynek = $item['room'];
-                $semestr = $item['semestr'];
-                $this->insertZajecia($id, $data_start, $data_koniec, $zastepca, $wykladowca, $wydzial, $grupa, $tok_studiow, $przedmiot, $forma, $sala_budynek, $semestr);
+                $department = $item['wydzial'];
+                $group = $item['group_name'];
+                //Dane do toku studiów
+                $tok_name = $item['tok_name'];
+                if($tok_name == null){
+                    $tok_name = "Brak";
+                }
+                $shortType = $item['typ_sk'];
+                if($shortType == null){
+                    $shortType = "Brak";
+                }
+                $shortKind = $item['rodzaj_sk'];
+                if($shortKind == null){
+                    $shortKind = "Brak";
+                }
+                $specialisation = $item['specjalnosc'];
+                if($specialisation == null){
+                    $specialisation = "Brak";
+                }
+                $major = $item['kierunek'];
+                if($major == null){
+                    $major = "Brak";
+                }
+                $subject = $item['subject'];
+                $form = $item['lesson_form'];
+                $room = $item['room'];
+                $semester = $item['semestr'];
+                $this->insertLesson($id, $dateSstart, $dateEnd, $cover, $teacherFirstName, $teacherLastName, $teacherTitle, $department, $group, $tok_name, $shortType, $shortKind, $specialisation, $major, $subject, $form, $room, $semester);
             }
         }
     }
 
     private function insertDepartment(string $department, string $departmentShort){
         $departmentModel = new Department();
-        $result = $departmentModel->findDepartment($department, $departmentShort);
-        if(!$result) {
+        $result = $departmentModel->findDepartment($department);
+        if($result == null) {
+            $departmentModel->setName($department);
+            $departmentModel->setShortName($departmentShort);
             $departmentModel->save();
         }
     }
-    private function insertRoomBuilding(string $room, string $department, string $departmentShort){
+    private function insertRoomBuilding(string $room, string $department){
         $departmentModel = new Department();
-        $departmentResult = $departmentModel->findDepartment($department, $departmentShort);
-
+        $departmentResult = $departmentModel->findDepartment($department);
         if ($departmentResult) {
             $departmentId = $departmentResult->getId();
             $roomBuildingModel = new RoomBuilding();
@@ -160,14 +186,19 @@ class Scrape
             throw new \Exception("Department not found");
         }
     }
-    private function insertStudyCourse($tok_name, $shortType, $shortKind, $specialisation, $major){
+    private function insertStudyCourse(string $tok_name, string $shortType, string $shortKind, string $specialisation, string $major){
         $studyCourseModel = new StudyCourse();
         $result = $studyCourseModel->findStudyCourse($tok_name, $shortType, $shortKind, $specialisation, $major);
         if(!$result){
+            $studyCourseModel->setTokName($tok_name);
+            $studyCourseModel->setShortType($shortType);
+            $studyCourseModel->setShortKind($shortKind);
+            $studyCourseModel->setSpecialisation($specialisation);
+            $studyCourseModel->setMajor($major);
             $studyCourseModel->save();
         }
     }
-    private function insertSubject($subject, $form ,$tok_name, $shortType, $shortKind, $specialisation, $major){
+    private function insertSubject(string $subject, string $form , string $tok_name, string $shortType, string $shortKind, string $specialisation, string $major){
         $studyCourseModel = new StudyCourse();
         $result = $studyCourseModel->findStudyCourse($tok_name, $shortType, $shortKind, $specialisation, $major);
         if($result){
@@ -175,6 +206,9 @@ class Scrape
             $subjectModel = new Subject();
             $result = $subjectModel->findSubject($subject, $form, $studyCourseId);
             if(!$result){
+                $subjectModel->setName($subject);
+                $subjectModel->setForm($form);
+                $subjectModel->setStudyCourseId($studyCourseId);
                 $subjectModel->save();
             }
         }
@@ -183,74 +217,60 @@ class Scrape
         $studyGroupModel = new StudyGroup();
         $result = $studyGroupModel->findStudyGroup($groupName);
         if(!$result){
+            $studyGroupModel->setName($groupName);
             $studyGroupModel->save();
         }
     }
-    private function insertTeacher(string $firstName, string $lastName, string $title)
-    {
+    private function insertTeacher(string $firstName, string $lastName, string $title){
         $teacherModel = new Teacher();
         $result = $teacherModel->findTeacher($firstName, $lastName, $title);
         if(!$result){
+            $teacherModel->setFirstName($firstName);
+            $teacherModel->setLastName($lastName);
+            $teacherModel->setTitle($title);
             $teacherModel->save();
         }
     }
-    private function insertZajecia(int $id, string $data_start, string $data_koniec, string $zastepca, string $wykladowca, string $wydzial, string $grupa, string $tok_studiow, string $przedmiot, string $forma, string $sala_budynek, int $semestr)
-    {
-        $stmt = $this->pdo->prepare("SELECT id FROM Wykladowca WHERE nazwisko_imie = :wykladowca");
-        $stmt->bindParam(':wykladowca', $wykladowca);
-        $stmt->execute();
-        $result = $stmt->fetch();
-        if($result){
-            $wykladowca_id = $result['id'];
-            $stmt = $this->pdo->prepare("SELECT id FROM Wydzial WHERE nazwa = :wydzial");
-            $stmt->bindParam(':wydzial', $wydzial);
-            $stmt->execute();
-            $result = $stmt->fetch();
-            if($result){
-                $wydzial_id = $result['id'];
-                $stmt = $this->pdo->prepare("SELECT id FROM Grupa WHERE nazwa = :grupa");
-                $stmt->bindParam(':grupa', $grupa);
-                $stmt->execute();
-                $result = $stmt->fetch();
-                if($result) {
-                    $grupa_id = $result['id'];
-                    $stmt = $this->pdo->prepare("SELECT id FROM Tok_studiow WHERE typ_skrot = :tok_studiow");
-                    $stmt->bindParam(':tok_studiow', $tok_studiow);
-                    $stmt->execute();
-                    $result = $stmt->fetch();
-                    if ($result) {
-                        $tok_studiow_id = $result['id'];
-                        $stmt = $this->pdo->prepare("SELECT id FROM Przedmiot WHERE nazwa = :przedmiot AND forma = :forma");
-                        $stmt->bindParam(':przedmiot', $przedmiot);
-                        $stmt->bindParam(':forma', $forma);
-                        $stmt->execute();
-                        $result = $stmt->fetch();
-                        if($result){
-                            $przedmiot_id = $result['id'];
-                            $stmt = $this->pdo->prepare("SELECT id FROM Sala_z_budynkiem WHERE budynek_sala = :sala_budynek");
-                            $stmt->bindParam(':sala_budynek', $sala_budynek);
-                            $stmt->execute();
-                            $result = $stmt->fetch();
-                            if($result){
-                                $sala_id = $result['id'];
-                                $stmt = $this->pdo->prepare("SELECT id FROM Zajecia WHERE id = :id");
-                                $stmt->bindParam(':id', $id);
-                                $stmt->execute();
-                                $result = $stmt->fetch();
+    private function insertLesson(int $id, string $dateSstart, string $dateEnd, string $cover, string $teacherFirstName,  string $teacherLastName, string $teacherTitle, string $department, string $group, string $tok_name, string $shortType, string $shortKind, string $specialisation, string $major, string $subject, string $form, string $room, int $semester){
+        $teacherModel = new Teacher();
+        $teacherResult = $teacherModel->findTeacher($teacherFirstName, $teacherLastName, $teacherTitle);
+        if($teacherResult){
+            $teacherId = $teacherResult->getId();
+            $departmentModel = new Department();
+            $departmentResult = $departmentModel->findDepartment($department);
+            if($departmentResult){
+                $departmentId = $departmentResult->getId();
+                $groupModel = new StudyGroup();
+                $groupResult = $groupModel->findStudyGroup($group);
+                if($groupResult){
+                    $groupId = $groupResult->getId();
+                    $studyCourseModel = new StudyCourse();
+                    $studyCourseResult = $studyCourseModel->findStudyCourse($tok_name, $shortType, $shortKind, $specialisation, $major);
+                    if($studyCourseResult){
+                        $studyCourseId = $studyCourseResult->getId();
+                        $subjectModel = new Subject();
+                        $subjectResult = $subjectModel->findSubject($subject, $form, $studyCourseId);
+                        if($subjectResult){
+                            $subjectId = $subjectResult->getId();
+                            $roomBuildingModel = new RoomBuilding();
+                            $roomResult = $roomBuildingModel->findRoom($room, $departmentId);
+                            if($roomResult){
+                                $roomId = $roomResult->getId();
+                                $lessonModel = new Lesson();
+                                $result = $lessonModel->findLesson($id);
                                 if(!$result){
-                                    $stmt = $this->pdo->prepare("INSERT INTO Zajecia (id,data_start, data_koniec, zastepca, semestr, wykladowca_id, wydzial_id, grupa_id, tok_studiow_id, przedmiot_id, sala_id) VALUES (:id,:data_start, :data_koniec, :zastepca, :semestr, :wykladowca_id, :wydzial_id, :grupa_id, :tok_studiow_id, :przedmiot_id, :sala_id)");
-                                    $stmt->bindParam(':id', $id);
-                                    $stmt->bindParam(':data_start', $data_start);
-                                    $stmt->bindParam(':data_koniec', $data_koniec);
-                                    $stmt->bindParam(':zastepca', $zastepca);
-                                    $stmt->bindParam(':semestr', $semestr);
-                                    $stmt->bindParam(':wykladowca_id', $wykladowca_id);
-                                    $stmt->bindParam(':wydzial_id', $wydzial_id);
-                                    $stmt->bindParam(':grupa_id', $grupa_id);
-                                    $stmt->bindParam(':tok_studiow_id', $tok_studiow_id);
-                                    $stmt->bindParam(':przedmiot_id', $przedmiot_id);
-                                    $stmt->bindParam(':sala_id', $sala_id);
-                                    $stmt->execute();
+                                    $lessonModel->setId($id);
+                                    $lessonModel->setDateStart($dateSstart);
+                                    $lessonModel->setDateEnd($dateEnd);
+                                    $lessonModel->setTeacherCover($cover);
+                                    $lessonModel->setTeacherId($teacherId);
+                                    $lessonModel->setDepartmentId($departmentId);
+                                    $lessonModel->setGroupId($groupId);
+                                    $lessonModel->setStudyCourseId($studyCourseId);
+                                    $lessonModel->setSubjectId($subjectId);
+                                    $lessonModel->setRoomId($roomId);
+                                    $lessonModel->setSemester($semester);
+                                    $lessonModel->save();
                                 }
                             }
                         }
@@ -259,8 +279,7 @@ class Scrape
             }
         }
     }
-    public function insertGrupaStudent(int $numer_albumu)
-    {
+    public function insertGrupaStudent(int $numer_albumu){
         $apiURL = "https://plan.zut.edu.pl/schedule_student.php?number={$numer_albumu}&start=2024-10-1&end=2024-10-31";
         $response = file_get_contents($apiURL);
         if(!$response) {

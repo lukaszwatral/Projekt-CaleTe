@@ -94,11 +94,15 @@ class StudyCourse{
         return $studyCourses;
     }
 
-    public function findStudyCourse(string $tokName, string $shortType, string $shortKind, string $specialisation, string $major): ?StudyCourse{
+    public function findStudyCourse(?string $tokName, ?string $shortType, ?string $shortKind, ?string $specialisation, ?string $major): ?StudyCourse{
         $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
-        $stmt = $pdo->prepare('SELECT id FROM StudyCourse WHERE tokName = :tokName AND shortType = :shortType AND shortKind = :shortKind AND specialisation = :specialisation AND major = :major');
+        $stmt = $pdo->prepare('SELECT * FROM StudyCourse WHERE tokName = :tokName AND shortType = :shortType AND shortKind = :shortKind AND specialisation = :specialisation AND major = :major');
         $stmt->execute(['tokName' => $tokName, 'shortType' => $shortType, 'shortKind' => $shortKind, 'specialisation' => $specialisation, 'major' => $major]);
-        return $stmt->fetch() ? self::fromArray($stmt->fetch()) : null;
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if ($result === false) {
+            return null; // No study course found
+        }
+        return self::fromArray($result);
     }
 
     public function save(){

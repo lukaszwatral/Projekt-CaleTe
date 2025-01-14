@@ -1,13 +1,13 @@
 -- Do czyszczenia bazy jak kiedyś coś nie zadziała
--- DROP TABLE IF EXISTS Department;
--- DROP TABLE IF EXISTS RoomBuilding;
--- DROP TABLE IF EXISTS StudyCourse;
--- DROP TABLE IF EXISTS Subject;
--- DROP TABLE IF EXISTS StudyGroup;
--- DROP TABLE IF EXISTS Student;
--- DROP TABLE IF EXISTS GroupStudent;
--- DROP TABLE IF EXISTS Teacher;
--- DROP TABLE IF EXISTS Lesson;
+DROP TABLE IF EXISTS Department;
+DROP TABLE IF EXISTS RoomBuilding;
+DROP TABLE IF EXISTS StudyCourse;
+DROP TABLE IF EXISTS Subject;
+DROP TABLE IF EXISTS StudyGroup;
+DROP TABLE IF EXISTS Student;
+DROP TABLE IF EXISTS GroupStudent;
+DROP TABLE IF EXISTS Teacher;
+DROP TABLE IF EXISTS Lesson;
 
 CREATE TABLE Department (
      id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -37,7 +37,7 @@ CREATE TABLE Subject (
     form TEXT NOT NULL, --wykład, ćwiczenia, laboratoria
 --     opis TEXT NOT NULL,
     studyCourseId INTEGER NOT NULL,
-    FOREIGN KEY (studyCourseId) REFERENCES studyCourse(id)
+    FOREIGN KEY (studyCourseId) REFERENCES StudyCourse(id)
 );
 
 CREATE TABLE StudyGroup (

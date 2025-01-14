@@ -62,11 +62,15 @@ class RoomBuilding{
 
     public function findRoom(string $room, int $departmentId): ?RoomBuilding{
         $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
-        $stmt = $pdo->prepare('SELECT id FROM RoomBuilding WHERE buildingRoom = :buildingRoom AND departmentId = :departmentId');
+        $stmt = $pdo->prepare('SELECT * FROM RoomBuilding WHERE buildingRoom = :buildingRoom AND departmentId = :departmentId');
         $stmt->bindParam(':buildingRoom', $room);
         $stmt->bindParam(':departmentId', $departmentId);
         $stmt->execute();
-        return $stmt->fetch() ? self::fromArray($stmt->fetch()) : null;
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if ($result === false) {
+            return null; // No department found
+        }
+        return self::fromArray($result);
     }
 
     public function save(){

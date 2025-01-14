@@ -1,7 +1,7 @@
 <?php
 require 'src/Service/Scrape.php'; // Adjust the path as necessary
 require 'config/config.php'; // Include the config file
-
+require_once __DIR__ . '/autoload.php';
 // Ensure $config is defined
 if (!isset($config)) {
     die('Configuration not found.');
