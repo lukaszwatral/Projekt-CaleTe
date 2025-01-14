@@ -38,6 +38,11 @@ ob_start(); ?>
         <button type="submit">Filter</button>
     </form>
 
+    <div class="button-container">
+        <button type="button" id="search-btn">Szukaj</button>
+        <button type="button" id="reset-filters">Wyczyść filtry</button>
+    </div>
+
     <ul class="index-list">
         <?php if (empty($filteredLessons)): ?>
             <li>No results found.</li>
@@ -52,8 +57,6 @@ ob_start(); ?>
     <h1>KALENDARZ</h1>
 
     <div class="button-container">
-        <button type="button" id="search-btn">Szukaj</button>
-        <button type="button" id="reset-filters">Wyczyść filtry</button>
         <button type="button" id="toggle-view-btn">Zmiana zakresu wyświetlania</button>
         <button type="button" id="calendar-format-btn">Zmiana sposobu wyświetlania</button>
     </div>
@@ -156,36 +159,18 @@ ob_start(); ?>
 
             calendar.render();
 
-            document.getElementById('search-btn').addEventListener('click', () => {
-                const filters = {
-                    wykladowca: document.getElementById('wykladowca')?.value || '',
-                    sala: document.getElementById('sala')?.value || '',
-                    przedmiot: document.getElementById('przedmiot')?.value || '',
-                    grupa: document.getElementById('grupa')?.value || '',
-                    numer_albumu: document.getElementById('numer_albumu')?.value || '',
-                };
+            const searchBtn = document.getElementById('search-btn');
+            const resetBtn = document.getElementById('reset-filters');
+            const filterForm = document.querySelector('form[action*="zajecia-index"]');
 
-                fetch('/index.php?action=kalendarz-filter', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(filters),
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        calendar.removeAllEvents();
-                        calendar.addEventSource(data);
-                    })
-                    .catch(error => console.error('Error:', error));
+            searchBtn.addEventListener('click', () => {
+                filterForm.submit();
             });
-            document.getElementById('reset-filters').addEventListener('click', () => {
-                document.querySelectorAll('#filter-form input').forEach(input => input.value = '');
-                fetch('/index.php?action=kalendarz-events')
-                    .then(response => response.json())
-                    .then(data => {
-                        calendar.removeAllEvents();
-                        calendar.addEventSource(data);
-                    })
-                    .catch(error => console.error('Error:', error));
+
+            resetBtn.addEventListener('click', () => {
+                const inputs = filterForm.querySelectorAll('input');
+                inputs.forEach(input => input.value = '');
+                filterForm.submit();
             });
             document.getElementById('toggle-view-btn').addEventListener('click', () => {
                 const views = ['timeGridWeek', 'dayGridMonth', 'listWeek'];
