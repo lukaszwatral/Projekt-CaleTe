@@ -7,8 +7,9 @@
     padding: 0;
     display: flex;
     justify-content: center;
-    align-items: center;
-    gap: 20px; // Odstęp między elementami legendy
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 10px;
 
     li {
       display: flex;
@@ -22,8 +23,54 @@
         margin-right: 8px;
         border: 1px solid #000;
         display: inline-block;
-        border-radius: 4px; // Opcjonalnie, zaokrąglone rogi
+        border-radius: 4px;
       }
     }
+  }
+
+  .fc-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+
+    .fc-toolbar-chunk {
+      margin: 0 10px;
+    }
+
+    .fc-toolbar-title {
+      margin: 10px 0;
+      font-size: 1.2rem;
+    }
+
+    .fc-button-group {
+      gap: 10px;
+
+      .fc-button {
+        margin: 0;
+        padding: 8px 12px;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .legend-list {
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    li {
+      width: 100%;
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    .color-box {
+      margin-right: 12px;
+    }
+
   }
 }
