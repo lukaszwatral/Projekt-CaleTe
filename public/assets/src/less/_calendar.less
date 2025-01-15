@@ -1,7 +1,12 @@
 .fc {
   float: left;
   width: 70%;
+  @media (max-width: @mobileBreakpoint) {
+    width: 100%;
+  }
 }
+
+
 
 #event-modal {
   position: fixed;
