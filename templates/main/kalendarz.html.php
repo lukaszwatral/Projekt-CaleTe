@@ -38,7 +38,7 @@ ob_start(); ?>
             var currentDates = { start: '', end: '' };
 
             async function fetchEvents(startDate, endDate) {
-                const url = `templates\zajecia\get_events.php?start=${startDate}&end=${endDate}`;
+
                 console.log(`Fetching events from ${startDate} to ${endDate}`);  // Debugging
                 try {
                     const response = await fetch(url);

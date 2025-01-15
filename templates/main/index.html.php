@@ -41,16 +41,16 @@ ob_start(); ?>
         <button type="button" id="reset-filters">Wyczyść filtry</button>
     </div>
 
-<!--    <ul class="index-list">-->
-<!--        --><?php //if (empty($filteredLessons)): ?>
-<!--            <li>No results found.</li>-->
-<!--        --><?php //else: ?>
-<!--            --><?php //foreach ($filteredLessons as $filteredLesson): ?>
-<!--                <li><h3>--><?php //= $filteredLesson->getId(), ". " , $filteredLesson->getDateStart(), "-", $filteredLesson->getDateEnd(), ", <br>Prowadzący: ", $filteredLesson->getTeacherName(), ", <br>Przedmiot: ", $filteredLesson->getSubjectName(), ", Forma: ", $filteredLesson->getSubjectForm(), ", <br>Sala: ", $filteredLesson->getClassroomName(), ", Grupa: ", $filteredLesson->getStudyCourseName(), ", <br>Wydział: ", $filteredLesson->getDepartmentName(), ", Tok: ", $filteredLesson->getStudyCourseId(), ", sem: ", $filteredLesson->getSemester(), ", rok: ", $filteredLesson->getYearOfStudy(), ", <br>Kierunek: ", $filteredLesson->getMajor(), ", Specjalizacja: ", $filteredLesson->getSpecialization() ?><!--</h3>-->
-<!--                </li>-->
-<!--            --><?php //endforeach; ?>
-<!--        --><?php //endif; ?>
-<!--    </ul>-->
+    <ul class="index-list">
+        <?php if (empty($filteredLessons)): ?>
+            <li>No results found.</li>
+        <?php else: ?>
+            <?php foreach ($filteredLessons as $filteredLesson): ?>
+                <li><h3><?= $filteredLesson->getId(), ". " , $filteredLesson->getDateStart(), "-", $filteredLesson->getDateEnd(), ", <br>Prowadzący: ", $filteredLesson->getTeacherName(), ", <br>Przedmiot: ", $filteredLesson->getSubjectName(), ", Forma: ", $filteredLesson->getSubjectForm(), ", <br>Sala: ", $filteredLesson->getClassroomName(), ", Grupa: ", $filteredLesson->getStudyCourseName(), ", <br>Wydział: ", $filteredLesson->getDepartmentName(), ", Tok: ", $filteredLesson->getStudyCourseId(), ", sem: ", $filteredLesson->getSemester(), ", rok: ", $filteredLesson->getYearOfStudy(), ", <br>Kierunek: ", $filteredLesson->getMajor(), ", Specjalizacja: ", $filteredLesson->getSpecialization() ?></h3>
+                </li>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </ul>
 
     <h1>KALENDARZ</h1>
 
@@ -63,6 +63,7 @@ ob_start(); ?>
         <?php include __DIR__ . '/../filter/_form.html.php'; ?>
     </form>
 
+    <link href="/public/assets/src/less/_calendar.css" rel="stylesheet" />
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
     <!-- Include FullCalendar CSS from node_modules -->
     <link href="../../node_modules/@fullcalendar/main.min.css" rel="stylesheet" />
@@ -70,6 +71,10 @@ ob_start(); ?>
     <link href="https://unpkg.com/tippy.js@6/dist/tippy.css" rel="stylesheet" />
     <!-- Create a container for the calendar -->
     <div id="calendar"></div>
+    <div id="legend">
+        <h2>Legenda</h2>
+        <h3>Placeholder</h3>
+    </div>
     <!-- Include FullCalendar JS from node_modules -->
     <script src="../../node_modules/@fullcalendar/main.min.js"></script>
     <!-- Include tippy.js -->
@@ -81,8 +86,7 @@ ob_start(); ?>
             var currentDates = { start: '', end: '' };
 
             async function fetchEvents(startDate, endDate) {
-                const url = `templates\zajecia\get_events.php?start=${startDate}&end=${endDate}`;
-                console.log(`Fetching events from ${startDate} to ${endDate}`);  // Debugging
+                console.log(`Fetching events from ${startDate} to ${endDate}`);
                 try {
                     const response = await fetch(url);
                     if (!response.ok) throw new Error('Failed to fetch events. Status: ' + response.status);
@@ -98,7 +102,6 @@ ob_start(); ?>
                         color: event.color,
                         extendedProps: event.extendedProps
                     }));
-
                 } catch (error) {
                     console.error('Error fetching events:', error);
                 }
@@ -109,16 +112,19 @@ ob_start(); ?>
                 start: '2025-01-07T10:15:00',
                 end: '2025-01-07T12:00:00',
                 description: 'This is a custom event',
-                color: '#ff0000' // Optional: set a custom color for the event
+                color: '#ff0000'
             };
+
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'timeGridWeek',
+                firstDay: 1,
+                initialDate: '2025-10-01',
                 events: async function (fetchInfo, successCallback, failureCallback) {
                     const { startStr, endStr } = fetchInfo;
                     currentDates.start = startStr;
                     currentDates.end = endStr;
 
-                    console.log(`Fetching events from ${startStr} to ${endStr}`);  // Debugging
+                    console.log(`Fetching events from ${startStr} to ${endStr}`);
 
                     await fetchEvents(startStr, endStr);
                     events.push(customEvent);
@@ -142,7 +148,14 @@ ob_start(); ?>
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'timeGridWeek,dayGridMonth,timeGridDay',
+                    right: 'timeGridWeek,dayGridMonth,timeGridDay,halfYearView',
+                },
+                views: {
+                    halfYearView: {
+                        type: 'dayGrid',
+                        duration: { months: 6 },
+                        buttonText: 'semester'
+                    }
                 },
                 locale: 'pl',
                 allDaySlot: false,
@@ -150,9 +163,8 @@ ob_start(); ?>
                     console.log(`Date range changed: ${dateInfo.startStr} to ${dateInfo.endStr}`);
                     currentDates.start = dateInfo.startStr;
                     currentDates.end = dateInfo.endStr;
-                    fetchEvents(dateInfo.startStr, dateInfo.endStr);  // Fetch events on date range change
+                    fetchEvents(dateInfo.startStr, dateInfo.endStr);
                 },
-
             });
 
             calendar.render();
@@ -170,12 +182,14 @@ ob_start(); ?>
                 inputs.forEach(input => input.value = '');
                 filterForm.submit();
             });
+
             document.getElementById('toggle-view-btn').addEventListener('click', () => {
                 const views = ['timeGridWeek', 'dayGridMonth', 'listWeek'];
                 const currentView = calendar.view.type;
                 const nextView = views[(views.indexOf(currentView) + 1) % views.length];
                 calendar.changeView(nextView);
             });
+
             document.getElementById('calendar-format-btn').addEventListener('click', () => {
                 const views = ['timeGridWeek', 'timeGridDay', 'listWeek'];
                 const currentView = calendar.view.type;
@@ -185,7 +199,6 @@ ob_start(); ?>
         });
     </script>
 
-    
 <?php $main = ob_get_clean();
 
 include __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'base.html.php';

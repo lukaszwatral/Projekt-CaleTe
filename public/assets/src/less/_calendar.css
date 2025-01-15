@@ -1,0 +1,15 @@
+#calendar .fc-halfYearView .fc-daygrid-day {
+  height: 80px !important;
+  width: 60px !important;
+  font-size: 12px !important;
+}
+#calendar .fc-halfYearView .fc-daygrid-day-number {
+  font-size: 12px !important;
+}
+#calendar .fc-halfYearView .fc-daygrid-day-top {
+  padding: 2px 4px !important;
+}
+#calendar .fc-halfYearView .fc-daygrid-day-frame {
+  padding: 0 !important;
+  margin: 0 !important;
+}
