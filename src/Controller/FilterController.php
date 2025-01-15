@@ -20,9 +20,9 @@ class FilterController
         $yearOfStudy = $_GET['yearOfStudy'] ?? null;
         $student = $_GET['student'] ?? null;
         $major = $_GET['major'] ?? null;
-        $specialization = $_GET['specialization'] ?? null;
+        $specialisation = $_GET['specialisation'] ?? null;
 
-        $filteredLessons = Filter::filteredFind($teacher, $subject, $classroom, $studyGroup, $department, $subjectForm, $studyCourse, $semester, $yearOfStudy, $student, $major, $specialization);
+        $filteredLessons = Filter::filteredFind($teacher, $subject, $classroom, $studyGroup, $department, $subjectForm, $studyCourse, $semester, $yearOfStudy, $student, $major, $specialisation);
 
         $html = $templating->render('main/index.html.php', [
             'filteredLessons' => $filteredLessons,

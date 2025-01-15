@@ -7,57 +7,65 @@ $title = 'Filter';
 $bodyClass = 'index';
 
 ob_start(); ?>
-    <h1>Zajecia List</h1>
 
-    <form action="<?= $router->generatePath('main-index') ?>" method="get">
-        <label for="teacher">Wykladowca:</label><br>
-        <input type="text" id="teacher" name="teacher" value="<?= htmlspecialchars($_GET['teacher'] ?? '') ?>"><br>
-        <label for="room">Sala:</label><br>
-        <input type="text" id="room" name="room" value="<?= htmlspecialchars($_GET['classroom'] ?? '') ?>"><br>
-        <label for="subject">Przedmiot:</label><br>
-        <input type="text" id="subject" name="subject" value="<?= htmlspecialchars($_GET['subject'] ?? '') ?>"><br>
-        <label for="studyGroup">Grupa:</label><br>
-        <input type="text" id="studyGroup" name="studyGroup" value="<?= htmlspecialchars($_GET['studyGroup'] ?? '') ?>"><br>
-        <label for="student">Numer albumu:</label><br>
-        <input type="text" id="student" name="student" value="<?= htmlspecialchars($_GET['student'] ?? '') ?>"><br>
-        <label for="department">Wydzial:</label><br>
-        <input type="text" id="department" name="department" value="<?= htmlspecialchars($_GET['department'] ?? '') ?>"><br>
-        <label for="subjectForm">Forma przedmiotu:</label><br>
-        <input type="text" id="subjectForm" name="subjectForm" value="<?= htmlspecialchars($_GET['subjectForm'] ?? '') ?>"><br>
-        <label for="studyCourse">Typ studiow:</label><br>
-        <input type="text" id="studyCourse" name="studyCourse" value="<?= htmlspecialchars($_GET['studyCourse'] ?? '') ?>"><br>
-        <label for="semester">Semestr:</label><br>
-        <input type="text" id="semester" name="semester" value="<?= htmlspecialchars($_GET['semester'] ?? '') ?>"><br>
-        <label for="yearOfStudy">Rok studiow:</label><br>
-        <input type="text" id="yearOfStudy" name="yearOfStudy" value="<?= htmlspecialchars($_GET['yearOfStudy'] ?? '') ?>"><br>
-        <label for="major">Kierunek:</label><br>
-        <input type="text" id="major" name="major" value="<?= htmlspecialchars($_GET['major'] ?? '') ?>"><br>
-        <label for="specialization">Specjalizacja:</label><br>
-        <input type="text" id="specialization" name="specialization" value="<?= htmlspecialchars($_GET['specialization'] ?? '') ?>"><br>
-    </form>
+    <div id="filterForm">
+        <form action="<?= $router->generatePath('main-index') ?>" method="get">
+            <label for="teacher">Wykladowca:</label><br>
+            <input type="text" id="teacher" name="teacher" value="<?= htmlspecialchars($_GET['teacher'] ?? '') ?>"><br>
+            <label for="room">Sala:</label><br>
+            <input type="text" id="room" name="room" value="<?= htmlspecialchars($_GET['classroom'] ?? '') ?>"><br>
+            <label for="subject">Przedmiot:</label><br>
+            <input type="text" id="subject" name="subject" value="<?= htmlspecialchars($_GET['subject'] ?? '') ?>"><br>
+            <label for="studyGroup">Grupa:</label><br>
+            <input type="text" id="studyGroup" name="studyGroup" value="<?= htmlspecialchars($_GET['studyGroup'] ?? '') ?>"><br>
+            <label for="student">Numer albumu:</label><br>
+            <input type="text" id="student" name="student" value="<?= htmlspecialchars($_GET['student'] ?? '') ?>"><br>
 
-    <div class="button-container">
-        <button type="button" id="search-btn">Szukaj</button>
-        <button type="button" id="reset-filters">Wyczyść filtry</button>
+            <div id="advanced-filters" style="display: none;">
+                <label for="department">Wydzial:</label><br>
+                <input type="text" id="department" name="department" value="<?= htmlspecialchars($_GET['department'] ?? '') ?>"><br>
+                <label for="subjectForm">Forma przedmiotu:</label><br>
+                <input type="text" id="subjectForm" name="subjectForm" value="<?= htmlspecialchars($_GET['subjectForm'] ?? '') ?>"><br>
+                <label for="studyCourse">Typ studiow:</label><br>
+                <input type="text" id="studyCourse" name="studyCourse" value="<?= htmlspecialchars($_GET['studyCourse'] ?? '') ?>"><br>
+                <label for="semester">Semestr:</label><br>
+                <input type="text" id="semester" name="semester" value="<?= htmlspecialchars($_GET['semester'] ?? '') ?>"><br>
+                <label for="yearOfStudy">Rok studiow:</label><br>
+                <input type="text" id="yearOfStudy" name="yearOfStudy" value="<?= htmlspecialchars($_GET['yearOfStudy'] ?? '') ?>"><br>
+                <label for="major">Kierunek:</label><br>
+                <input type="text" id="major" name="major" value="<?= htmlspecialchars($_GET['major'] ?? '') ?>"><br>
+                <label for="specialisation">Specjalizacja:</label><br>
+                <input type="text" id="specialisation" name="specialisation" value="<?= htmlspecialchars($_GET['specialisation'] ?? '') ?>"><br>
+            </div>
+
+            <button type="button" id="toggle-advanced-filters">Filtry zaawansowane</button>
+            <button type="submit" value="Submit">Filter</button>
+        </form>
+        <div class="button-container">
+            <button type="button" id="search-btn">Szukaj</button>
+            <button type="button" id="reset-filters">Wyczyść filtry</button>
+        </div>
     </div>
+    <script src="/public/assets/scripts/filter.js"></script>
 
-    <ul class="index-list">
-        <?php if (empty($filteredLessons)): ?>
-            <li>No results found.</li>
-        <?php else: ?>
-            <?php foreach ($filteredLessons as $filteredLesson): ?>
-                <li><h3><?= $filteredLesson->getId(), ". " , $filteredLesson->getDateStart(), "-", $filteredLesson->getDateEnd(), ", <br>Prowadzący: ", $filteredLesson->getTeacherName(), ", <br>Przedmiot: ", $filteredLesson->getSubjectName(), ", Forma: ", $filteredLesson->getSubjectForm(), ", <br>Sala: ", $filteredLesson->getClassroomName(), ", Grupa: ", $filteredLesson->getStudyCourseName(), ", <br>Wydział: ", $filteredLesson->getDepartmentName(), ", Tok: ", $filteredLesson->getStudyCourseId(), ", sem: ", $filteredLesson->getSemester(), ", rok: ", $filteredLesson->getYearOfStudy(), ", <br>Kierunek: ", $filteredLesson->getMajor(), ", Specjalizacja: ", $filteredLesson->getSpecialization() ?></h3>
-                </li>
-            <?php endforeach; ?>
-        <?php endif; ?>
-    </ul>
 
-    <h1>KALENDARZ</h1>
 
-    <div class="button-container">
-        <button type="button" id="toggle-view-btn">Zmiana zakresu wyświetlania</button>
-        <button type="button" id="calendar-format-btn">Zmiana sposobu wyświetlania</button>
-    </div>
+<!--    <ul class="index-list">-->
+<!--        --><?php //if (empty($filteredLessons)): ?>
+<!--            <li>No results found.</li>-->
+<!--        --><?php //else: ?>
+<!--            --><?php //foreach ($filteredLessons as $filteredLesson): ?>
+<!--                <li><h3>--><?php //= $filteredLesson->getId(), ". " , $filteredLesson->getDateStart(), "-", $filteredLesson->getDateEnd(), ", <br>Prowadzący: ", $filteredLesson->getTeacherName(), ", <br>Przedmiot: ", $filteredLesson->getSubjectName(), ", Forma: ", $filteredLesson->getSubjectForm(), ", <br>Sala: ", $filteredLesson->getClassroomName(), ", Grupa: ", $filteredLesson->getStudyCourseName(), ", <br>Wydział: ", $filteredLesson->getDepartmentName(), ", Tok: ", $filteredLesson->getStudyCourseId(), ", sem: ", $filteredLesson->getSemester(), ", rok: ", $filteredLesson->getYearOfStudy(), ", <br>Kierunek: ", $filteredLesson->getMajor(), ", Specjalizacja: ", $filteredLesson->getSpecialisation() ?><!--</h3>-->
+<!--                </li>-->
+<!--            --><?php //endforeach; ?>
+<!--        --><?php //endif; ?>
+<!--    </ul>-->
+
+
+<!--    <div class="button-container">-->
+<!--        <button type="button" id="toggle-view-btn">Zmiana zakresu wyświetlania</button>-->
+<!--        <button type="button" id="calendar-format-btn">Zmiana sposobu wyświetlania</button>-->
+<!--    </div>-->
 
     <form id="filter-form" style="display: none;">
         <?php include __DIR__ . '/../filter/_form.html.php'; ?>

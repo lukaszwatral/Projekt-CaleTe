@@ -27,7 +27,7 @@ class Filter {
     private ?string $studyCourseName = null;
 
     private ?string $major = null;
-    private ?string $specialization = null;
+    private ?string $specialisation = null;
 
     public function getId(): ?int
     {
@@ -239,14 +239,14 @@ class Filter {
         $this->major = $major;
     }
 
-    public function getSpecialization(): ?string
+    public function getSpecialisation(): ?string
     {
-        return $this->specialization;
+        return $this->specialisation;
     }
 
-    public function setSpecialization(?string $specialization): void
+    public function setSpecialisation(?string $specialisation): void
     {
-        $this->specialization = $specialization;
+        $this->specialisation = $specialisation;
     }
 
     public static function fromArray($array): Filter
@@ -320,8 +320,8 @@ class Filter {
         if (isset($array['major'])) {
             $this->setMajor($array['major']);
         }
-        if (isset($array['specialization'])) {
-            $this->setSpecialization($array['specialization']);
+        if (isset($array['specialisation'])) {
+            $this->setSpecialisation($array['specialisation']);
         }
 
         return $this;
@@ -359,7 +359,7 @@ class Filter {
         return $lessons;
     }
 
-    public static function filteredFind($teacher = null, $subject = null, $classroom = null, $studyGroup = null, $department = null, $subjectForm = null, $studyCourse = null, $semester = null, $yearOfStudy = null, $student = null, $major = null, $specialization = null): array
+    public static function filteredFind($teacher = null, $subject = null, $classroom = null, $studyGroup = null, $department = null, $subjectForm = null, $studyCourse = null, $semester = null, $yearOfStudy = null, $student = null, $major = null, $specialisation = null): array
     {
         $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
 
@@ -372,7 +372,7 @@ class Filter {
                    Department.name AS departmentName,
                    StudyCourse.tokName AS studyCourseName,
                    StudyCourse.major AS major,
-                   StudyCourse.specialisation AS specialization
+                   StudyCourse.specialisation AS specialisation
             FROM Lesson
             LEFT JOIN Teacher ON Lesson.teacherId = Teacher.id
             LEFT JOIN Subject ON Lesson.subjectId = Subject.id
@@ -423,6 +423,14 @@ class Filter {
             $params['yearOfStudy1'] = $yearOfStudy * 2 - 1;
             $params['yearOfStudy2'] = $yearOfStudy * 2;
         }
+        if ($major != null) {
+            $sql .= ' AND StudyCourse.major = :major';
+            $params['major'] = $major;
+        }
+        if($specialisation != null){
+            $sql .= ' AND StudyCourse.specialisation = :specialisation';
+            $params['specialisation'] = $specialisation;
+        }
 //        if($student != null){
 //            $stmt = $pdo->prepare('SELECT id FROM Student WHERE id = :student');
 //            $stmt->bindParam(':student', $student);
@@ -462,7 +470,10 @@ class Filter {
             $filteredLessons[] = self::fromArray($filteredLessonArray);
         }
 
+
         return $filteredLessons;
     }
+
+
 
 }
