@@ -81,8 +81,15 @@ ob_start(); ?>
     <div id="calendar"></div>
     <div id="legend">
         <h2>Legenda</h2>
-        <h3>Placeholder</h3>
+        <ul class="legend-list">
+            <li><span class="color-box" style="background-color: #006b27;"></span> Laboratoria</li>
+            <li><span class="color-box" style="background-color: #00809f;"></span> Wykład</li>
+            <li><span class="color-box" style="background-color: #ef9529;"></span> Lektorat</li>
+            <li><span class="color-box" style="background-color: #5a6e02;"></span> Projekt</li>
+            <li><span class="color-box" style="background-color: #004ca8;"></span> Audytoryjne</li>
+        </ul>
     </div>
+
     <!-- Include FullCalendar JS from node_modules -->
     <script src="../../node_modules/@fullcalendar/main.min.js"></script>
     <!-- Include tippy.js -->
@@ -92,7 +99,6 @@ ob_start(); ?>
             var calendarEl = document.getElementById('calendar');
             var events = [];
             var currentDates = { start: '', end: '' };
-
             async function fetchEvents(startDate, endDate) {
                 console.log(`Fetching events from ${startDate} to ${endDate}`);
                 try {
@@ -115,18 +121,53 @@ ob_start(); ?>
                 }
             }
 
-            var customEvent = {
-                title: 'Custom Event',
-                start: '2025-01-07T10:15:00',
-                end: '2025-01-07T12:00:00',
-                description: 'This is a custom event',
-                color: '#ff0000'
-            };
+            var customEvent = [
+                {
+                    title: 'Sieci komputerowe (L)',
+                    start: '2025-01-07T10:15:00',
+                    end: '2025-01-07T12:00:00',
+                    description: 'Laboratorium z sieci komputerowych',
+                    color: '#006b27',
+                    extendedProps: {
+                        teacher: 'Jan Kowalski',
+                        room: 'B-123',
+                        subject: 'Sieci komputerowe',
+                        studyGroup: 'Informatyka',
+                    }
+                },
+                {
+                    title: 'Aplikacje internetowe (W)',
+                    start: '2025-01-07T12:15:00',
+                    end: '2025-01-07T14:00:00',
+                    description: 'Wykład z aplikacji internetowych',
+                    color: '#00809f'
+                },
+                {
+                    title: 'Język Angielski (Lek)',
+                    start: '2025-01-08T08:15:00',
+                    end: '2025-01-08T10:00:00',
+                    description: 'Lektorat z języka angielskiego',
+                    color: '#ef9529'
+                },
+                {
+                    title: 'IPZ (P)',
+                    start: '2025-01-08T10:15:00',
+                    end: '2025-01-08T12:00:00',
+                    description: 'Projekt z IPZ',
+                    color: '#5a6e02'
+                },
+                {
+                    title: 'WF (A)',
+                    start: '2025-01-09T12:15:00',
+                    end: '2025-01-09T14:00:00',
+                    description: 'Zajęcia audytoryjne z WF',
+                    color: '#004ca8'
+                }
+            ];
 
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'timeGridWeek',
                 firstDay: 1,
-                initialDate: '2025-10-01',
                 events: async function (fetchInfo, successCallback, failureCallback) {
                     const { startStr, endStr } = fetchInfo;
                     currentDates.start = startStr;
@@ -135,7 +176,7 @@ ob_start(); ?>
                     console.log(`Fetching events from ${startStr} to ${endStr}`);
 
                     await fetchEvents(startStr, endStr);
-                    events.push(customEvent);
+                    events = events.concat(customEvent);
                     if (events.length > 0) {
                         successCallback(events);
                     } else {
@@ -156,17 +197,19 @@ ob_start(); ?>
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'timeGridWeek,dayGridMonth,timeGridDay,halfYearView',
+                    right: 'timeGridWeek,dayGridMonth,timeGridDay,multiMonthYear',
                 },
                 views: {
-                    halfYearView: {
+                    multiMonthYear: {
                         type: 'dayGrid',
-                        duration: { months: 6 },
+                        start: '2025-01-01',
+                        end: '2025-12-31',
                         buttonText: 'semester'
                     }
                 },
                 locale: 'pl',
                 allDaySlot: false,
+
                 datesSet: (dateInfo) => {
                     console.log(`Date range changed: ${dateInfo.startStr} to ${dateInfo.endStr}`);
                     currentDates.start = dateInfo.startStr;

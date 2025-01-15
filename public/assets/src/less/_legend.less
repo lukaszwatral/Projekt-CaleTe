@@ -1,0 +1,29 @@
+#legend {
+  text-align: center;
+  margin-top: 20px;
+
+  .legend-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px; // Odstęp między elementami legendy
+
+    li {
+      display: flex;
+      align-items: center;
+      font-size: 1rem;
+      font-weight: bold;
+
+      .color-box {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+        border: 1px solid #000;
+        display: inline-block;
+        border-radius: 4px; // Opcjonalnie, zaokrąglone rogi
+      }
+    }
+  }
+}
