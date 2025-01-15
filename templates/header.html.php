@@ -4,6 +4,6 @@
 ?>
 
     <a href="<?= $router->generatePath('') ?>">
-        <img src="/public/assets/images/logo-zut.svg" alt="Logo">
+        <img src="/assets/images/logo-zut.svg" alt="Logo">
     </a>
 <?php
