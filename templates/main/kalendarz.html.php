@@ -12,8 +12,8 @@ ob_start(); ?>
     <h1>KALENDARZ</h1>
 
     <div class="button-container">
-        <button type="button" id="toggle-view-btn">Zmiana zakresu wyświetlania</button>
-        <button type="button" id="calendar-format-btn">Zmiana sposobu wyświetlania</button>
+        <button type="button" id="toggle-view-btn" class="btn">Zmiana zakresu wyświetlania</button>
+        <button type="button" id="calendar-format-btn" class="btn">Zmiana sposobu wyświetlania</button>
     </div>
 
     <form id="filter-form" style="display: none;">
