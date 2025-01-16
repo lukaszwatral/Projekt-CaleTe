@@ -5,9 +5,10 @@ header {
   align-items: center;
   padding: 0 20px;
   border-bottom: 1px solid @lineColor;
-
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
   img {
-    height: 50px;
+    height: 60px;
     max-width: 100%;
   }
 
@@ -32,6 +33,15 @@ header {
 
     &:active {
       transform: scale(0.95);
+    }
+  }
+  @media(max-width: @mobileBreakpoint){
+    flex-direction: column;
+    img {
+      height: 100px;
+    }
+    #customization-buttons {
+      gap: 10px;
     }
   }
 }

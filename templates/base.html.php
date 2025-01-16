@@ -12,6 +12,6 @@
 <header><?php require(__DIR__ . DIRECTORY_SEPARATOR . 'header.html.php') ?></header>
 <!--<nav>--><?php //require(__DIR__ . DIRECTORY_SEPARATOR . 'nav.html.php') ?><!--</nav>-->
 <main><?= $main ?? null ?></main>
-<footer>&copy;<?= date('Y') ?> Custom Framework</footer>
+<footer>&copy;<?= date('Y') ?> Lepszy Plan ZUT by Projekt-CałeTe</footer>
 </body>
 </html>
