@@ -13,3 +13,93 @@
 @import "_filterForm";
 @import "_buttons";
 @import "_legend";
+
+.large-font {
+  font-size: 1.25rem !important;
+}
+
+.large-font * {
+  font-size: inherit !important;
+}
+
+.dark-mode {
+  background-color: #121212;
+  color: #ffffff;
+
+  * {
+    background-color: #121212;
+    color: inherit !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: #ffffff !important;
+  }
+
+  a {
+    color: #bb86fc !important;
+    text-decoration: none;
+
+    &:hover {
+      color: #ffffff !important;
+    }
+  }
+
+  .btn {
+    background-color: #333333 !important;
+    color: #ffffff !important;
+    border: 1px solid #bb86fc;
+
+    &:hover {
+      background-color: #444444 !important;
+    }
+  }
+
+  input, textarea, select {
+    background-color: #1e1e1e !important;
+    color: #ffffff !important;
+    border: 1px solid #444444;
+
+    &::placeholder {
+      color: #888888;
+    }
+  }
+
+  table {
+    background-color: #1e1e1e !important;
+    border-collapse: collapse;
+
+    th, td {
+      border: 1px solid #444444;
+      padding: 10px;
+    }
+
+    th {
+      background-color: #333333;
+      color: #ffffff;
+    }
+
+    td {
+      color: #cccccc;
+    }
+  }
+
+  #calendar {
+    background-color: #1f1f1f !important;
+    color: #ffffff !important;
+
+    .fc-event {
+      background-color: #333333 !important;
+      color: #ffffff !important;
+    }
+  }
+
+  header {
+    background-color: #1e1e1e;
+    border-bottom: 1px solid #333333;
+  }
+
+  footer {
+    background-color: #1e1e1e;
+    color: #ffffff;
+  }
+}

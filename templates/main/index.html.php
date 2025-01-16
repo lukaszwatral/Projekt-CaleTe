@@ -41,12 +41,12 @@ ob_start(); ?>
                 <input type="text" id="specialisation" name="specialisation" value="<?= htmlspecialchars($_GET['specialisation'] ?? '') ?>"><br>
             </div>
 
-            <button type="button" id="toggle-advanced-filters" class="btn">Filtry zaawansowane</button>
+            <div class="button-container">
+                <button type="button" id="toggle-advanced-filters" class="btn">Filtry zaawansowane</button>
+                <button type="button" id="search-btn" class="btn">Szukaj</button>
+                <button type="button" id="reset-filters" class="btn">Wyczyść filtry</button>
+            </div>
         </form>
-        <div class="button-container">
-            <button type="button" id="search-btn" class="btn">Szukaj</button>
-            <button type="button" id="reset-filters" class="btn">Wyczyść filtry</button>
-        </div>
         </div>
     </div>
     <script src="/assets/scripts/filter.js"></script>

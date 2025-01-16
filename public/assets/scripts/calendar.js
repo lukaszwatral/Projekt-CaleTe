@@ -142,18 +142,45 @@ document.addEventListener('DOMContentLoaded', function () {
 
     calendar.render();
 
+    const changeFontBtn = document.getElementById('change-font-btn');
+    let isFontLarge = false;
+
+    changeFontBtn.addEventListener('click', () => {
+        if (isFontLarge) {
+            document.body.classList.remove('large-font');
+            isFontLarge = false;
+        } else {
+            document.body.classList.add('large-font');
+            isFontLarge = true;
+        }
+    });
+
+    const darkModeBtn = document.getElementById('dark-mode-btn');
+    let isDarkMode = false;
+
+    darkModeBtn.addEventListener('click', () => {
+        if (isDarkMode) {
+            document.body.classList.remove('dark-mode');
+            darkModeBtn.textContent = 'Ciemny motyw';
+            isDarkMode = false;
+        } else {
+            document.body.classList.add('dark-mode');
+            darkModeBtn.textContent = 'Jasny motyw';
+            isDarkMode = true;
+        }
+    });
+
     const searchBtn = document.getElementById('search-btn');
-    const resetBtn = document.getElementById('reset-filters');
-    const filterForm = document.querySelector('form[action*="zajecia-index"]');
+    const filterForm = document.querySelector('form[action*="main-index"]');
 
     searchBtn.addEventListener('click', () => {
         filterForm.submit();
     });
 
+    const resetBtn = document.getElementById('reset-filters');
+
     resetBtn.addEventListener('click', () => {
-        const inputs = filterForm.querySelectorAll('input');
-        inputs.forEach(input => input.value = '');
-        filterForm.submit();
+        window.location.href = '/'
     });
 
     document.getElementById('toggle-view-btn').addEventListener('click', () => {
