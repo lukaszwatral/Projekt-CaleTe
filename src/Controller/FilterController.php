@@ -54,8 +54,18 @@ class FilterController
                 'title' => $lesson->getSubjectName(),
                 'start' => $lesson->getDateStart(),
                 'end' => $lesson->getDateEnd(),
-                'description' => "Teacher: {$lesson->getTeacherName()}",
-                'color' => '#007bff',
+                'teacher' => $lesson->getTeacherName(),
+                'classroom' => $lesson->getClassroomName(),
+                'studyGroup' => $lesson->getStudyGroupName(),
+                'department' => $lesson->getDepartmentName(),
+                'subjectForm' => $lesson->getSubjectForm(),
+                'studyCourse' => $lesson->getStudyCourseName(),
+                'semester' => $lesson->getSemester(),
+                'yearOfStudy' => $lesson->getYearOfStudy(),
+                'major' => $lesson->getMajor(),
+                'specialisation' => $lesson->getSpecialisation(),
+                'id' => $lesson->getId(),
+                'description' => $lesson->getSubjectName() . ' ' . $lesson->getTeacherName() . ' ' . $lesson->getClassroomName() . ' ' . $lesson->getStudyGroupName() . ' ' . $lesson->getDepartmentName() . ' ' . $lesson->getSubjectForm() . ' ' . $lesson->getStudyCourseName() . ' ' . $lesson->getSemester() . ' ' . $lesson->getYearOfStudy() . ' ' . $lesson->getMajor() . ' ' . $lesson->getSpecialisation(),
             ];
         }
 

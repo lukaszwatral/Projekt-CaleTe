@@ -19,8 +19,13 @@ switch ($action) {
         break;
     case 'event':
         $controller = new \App\Controller\FilterController();
-        $controller->eventAction();
+        $view = $controller->eventAction();
         break;
+        case 'apiplan':
+        $controller = new \App\Controller\APIplanController();
+        $view = $controller->getData();
+        break;
+
     default:
         $view = 'Not found';
         break;
