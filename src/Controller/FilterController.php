@@ -24,6 +24,7 @@ class FilterController
 
         $filteredLessons = Filter::filteredFind($teacher, $subject, $classroom, $studyGroup, $department, $subjectForm, $studyCourse, $semester, $yearOfStudy, $student, $major, $specialisation);
 
+
         $html = $templating->render('main/index.html.php', [
             'filteredLessons' => $filteredLessons,
             'router' => $router,
@@ -31,67 +32,36 @@ class FilterController
         return $html;
     }
 
-    public function kalendarzAction(Templating $templating, Router $router): ?string
-    {
-        $html = $templating->render('main/kalendarz.html.php', [
-            'router' => $router,
-        ]);
-        return $html;
-    }
-    public function getEvents(string $start, string $end): array
-    {
-        $zajecia = Filter::filteredFind(
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null
-        );
+    public function eventAction(): void {
+        $teacher = $_GET['teacher'] ?? null;
+        $subject = $_GET['subject'] ?? null;
+        $classroom = $_GET['classroom'] ?? null;
+        $studyGroup = $_GET['studyGroup'] ?? null;
+        $department = $_GET['department'] ?? null;
+        $subjectForm = $_GET['subjectForm'] ?? null;
+        $studyCourse = $_GET['studyCourse'] ?? null;
+        $semester = $_GET['semester'] ?? null;
+        $yearOfStudy = $_GET['yearOfStudy'] ?? null;
+        $student = $_GET['student'] ?? null;
+        $major = $_GET['major'] ?? null;
+        $specialisation = $_GET['specialisation'] ?? null;
+
+        $filteredLessons = Filter::filteredFind($teacher, $subject, $classroom, $studyGroup, $department, $subjectForm, $studyCourse, $semester, $yearOfStudy, $student, $major, $specialisation);
 
         $events = [];
-        foreach ($zajecia as $zaj) {
+        foreach ($filteredLessons as $lesson) {
             $events[] = [
-                'title' => $zaj->getPrzedmiotName(),
-                'start' => $zaj->getDataStart(),
-                'end' => $zaj->getDataKoniec(),
-                'description' => "Prowadzący: {$zaj->getWykladowcaName()}",
+                'title' => $lesson->getSubjectName(),
+                'start' => $lesson->getDateStart(),
+                'end' => $lesson->getDateEnd(),
+                'description' => "Teacher: {$lesson->getTeacherName()}",
                 'color' => '#007bff',
             ];
         }
 
-        return $events;
+        header('Content-Type: application/json');
+        echo json_encode($events);
     }
-    public function filterEvents(array $filters): array
-    {
-        $zajecia = Filter::filteredFind(
-            $filters['wykladowca'] ?? null,
-            $filters['przedmiot'] ?? null,
-            $filters['sala'] ?? null,
-            $filters['grupa'] ?? null,
-            $filters['wydzial'] ?? null,
-            $filters['forma_przedmiotu'] ?? null,
-            $filters['typ_studiow'] ?? null,
-            $filters['semestr_studiow'] ?? null,
-            $filters['rok_studiow'] ?? null,
-            $filters['student'] ?? null
-        );
 
-        $events = [];
-        foreach ($zajecia as $zaj) {
-            $events[] = [
-                'title' => $zaj->getPrzedmiotName(),
-                'start' => $zaj->getDataStart(),
-                'end' => $zaj->getDataKoniec(),
-                'description' => "Prowadzący: {$zaj->getWykladowcaName()}",
-                'color' => '#007bff',
-            ];
-        }
 
-        return $events;
-    }
 }

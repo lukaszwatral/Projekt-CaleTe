@@ -63,13 +63,7 @@ class GroupStudent{
 
     public function save(){
         $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
-        if(!$this->getGroupId() || !$this->getStudentId()){
             $stmt = $pdo->prepare('INSERT INTO GroupStudent (groupId, studentId) VALUES (:groupId, :studentId)');
             $stmt->execute(['groupId' => $this->getGroupId(), 'studentId' => $this->getStudentId()]);
-        }
-        else{
-            $stmt = $pdo->prepare('UPDATE GroupStudent SET groupId = :groupId, studentId = :studentId WHERE groupId = :groupId AND studentId = :studentId');
-            $stmt->execute(['groupId' => $this->getGroupId(), 'studentId' => $this->getStudentId()]);
-        }
     }
 }

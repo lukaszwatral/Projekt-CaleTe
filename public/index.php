@@ -17,17 +17,9 @@ switch ($action) {
         $controller = new \App\Controller\FilterController();
         $view = $controller->indexAction($templating, $router);
         break;
-    case 'kalendarz-index':
+    case 'event':
         $controller = new \App\Controller\FilterController();
-        $view = $controller->kalendarzAction($templating, $router);
-        break;
-    case 'kalendarz-events':
-        $controller = new \App\Controller\FilterController();
-        echo json_encode($controller->getEvents($_GET['start'], $_GET['end']));
-        break;
-    case 'kalendarz-filter':
-        $controller = new \App\Controller\FilterController();
-        echo json_encode($controller->filterEvents(json_decode(file_get_contents('php://input'), true)));
+        $controller->eventAction();
         break;
     default:
         $view = 'Not found';

@@ -8,6 +8,7 @@ DROP TABLE IF EXISTS Student;
 DROP TABLE IF EXISTS GroupStudent;
 DROP TABLE IF EXISTS Teacher;
 DROP TABLE IF EXISTS Lesson;
+DROP TABLE IF EXISTS CourseStudent;
 
 CREATE TABLE Department (
      id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -46,11 +47,7 @@ CREATE TABLE StudyGroup (
 );
 
 CREATE TABLE Student (
-    id INTEGER PRIMARY KEY, --id to numer albumu
-    studyCourseId INTEGER NOT NULL,
-    departmentId INTEGER NOT NULL,
-    FOREIGN KEY (studyCourseId) REFERENCES StudyCourse(id),
-    FOREIGN KEY (departmentId) REFERENCES Department(id)
+    id INTEGER PRIMARY KEY --id to numer albumu
 );
 
 CREATE TABLE GroupStudent(
@@ -87,4 +84,11 @@ CREATE TABLE Lesson(
     FOREIGN KEY (studyCourseId) REFERENCES StudyCourse(id),
     FOREIGN KEY (subjectId) REFERENCES Subject(id),
     FOREIGN KEY (roomId) REFERENCES RoomBuilding(id)
-)
+);
+
+CREATE TABLE CourseStudent(
+    courseId INTEGER NOT NULL,
+    studentId INTEGER NOT NULL,
+    FOREIGN KEY (courseId) REFERENCES StudyCourse(id),
+    FOREIGN KEY (studentId) REFERENCES Student(id)
+);

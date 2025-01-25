@@ -45,6 +45,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     ];
 
+
+
     async function fetchEvents(startDate, endDate) {
         const cacheKey = `${startDate}_${endDate}`;
         if (eventsCache[cacheKey]) {
@@ -79,15 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'timeGridWeek',
         firstDay: 1,
-        events: async function (fetchInfo, successCallback, failureCallback) {
-            const { startStr, endStr } = fetchInfo;
-            try {
-                const events = await fetchEvents(startStr, endStr);
-                successCallback(events.concat(customEvent));
-            } catch (error) {
-                failureCallback('No events fetched');
-            }
-        },
+        events: '../../index.php?action=event',
         loading: function (isLoading) {
             if (isLoading) {
                 console.log('Loading events...');

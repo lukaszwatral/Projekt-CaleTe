@@ -312,7 +312,7 @@ class Filter {
             $this->setDepartmentName($array['departmentName']);
         }
         if (isset($array['studyCourseName'])) {
-            $this->setStudyCourseName($array['studyCourseId']);
+            $this->setStudyCourseName($array['studyCourseName']);
         }
         if (isset($array['subjectForm'])) {
             $this->setSubjectForm($array['subjectForm']);
@@ -431,36 +431,86 @@ class Filter {
             $sql .= ' AND StudyCourse.specialisation = :specialisation';
             $params['specialisation'] = $specialisation;
         }
-//        if($student != null){
-//            $stmt = $pdo->prepare('SELECT id FROM Student WHERE id = :student');
-//            $stmt->bindParam(':student', $student);
-//            $stmt->execute();
-//            $result = $stmt->fetchAll();
-//            if($result){
-//                $stmt = $pdo->prepare('SELECT grupa_id FROM Grupa_Student WHERE student_id = :student');
-//                $stmt->bindParam(':student', $student);
-//                $stmt->execute();
-//                $result = $stmt->fetchAll();
-//                if($result){
-//                    $sql .= ' AND (';
-//                    $i = 0;
-//                    foreach($result as $row){
-//                        if($i > 0){
-//                            $sql .= ' OR ';
-//                        }
-//                        $sql .= 'Filter.grupa_id = :grupa_id' . $i;
-//                        $params['grupa_id' . $i] = $row['grupa_id'];
-//                        $i++;
-//                    }
-//                    $sql .= ')';
-//                }
-//            }
-//            else{
-//                $scrapeData = new Scrape($pdo);
-//                $scrapeData->insertGrupaStudent($student);
-//            }
-//        }
-
+        if($student != null){
+            $stmt = $pdo->prepare('SELECT id FROM Student WHERE id = :student');
+            $stmt->bindParam(':student', $student);
+            $stmt->execute();
+            $result = $stmt->fetchAll();
+            if($result){
+                $stmt = $pdo->prepare('SELECT groupId FROM GroupStudent WHERE studentId = :student');
+                $stmt->bindParam(':student', $student);
+                $stmt->execute();
+                $resultGroup = $stmt->fetchAll();
+                if($resultGroup){
+                    $sql .= ' AND (';
+                    $i = 0;
+                    foreach($resultGroup as $row){
+                        if($i > 0){
+                            $sql .= ' OR ';
+                        }
+                        $sql .= 'Lesson.groupId = :groupId' . $i;
+                        $params['groupId' . $i] = $row['groupId'];
+                        $i++;
+                    }
+                    $sql .= ')';
+                }
+                $stmt = $pdo->prepare('SELECT courseId FROM CourseStudent WHERE studentId = :student');
+                $stmt->bindParam(':student', $student);
+                $stmt->execute();
+                $resultCourse = $stmt->fetchAll();
+                if($resultCourse){
+                    $sql .= ' AND (';
+                    $i = 0;
+                    foreach($resultCourse as $row){
+                        if($i > 0){
+                            $sql .= ' OR ';
+                        }
+                        $sql .= 'Lesson.studyCourseId = :courseId' . $i;
+                        $params['courseId' . $i] = $row['courseId'];
+                        $i++;
+                    }
+                    $sql .= ')';
+                }
+            }
+            else{
+                $scrapeData = new Scrape($pdo);
+                $scrapeData->insertGroupStudent($student);
+                $stmt = $pdo->prepare('SELECT groupId FROM GroupStudent WHERE studentId = :student');
+                $stmt->bindParam(':student', $student);
+                $stmt->execute();
+                $resultGroup = $stmt->fetchAll();
+                if($resultGroup){
+                    $sql .= ' AND (';
+                    $i = 0;
+                    foreach($resultGroup as $row){
+                        if($i > 0){
+                            $sql .= ' OR ';
+                        }
+                        $sql .= 'Lesson.groupId = :groupId' . $i;
+                        $params['groupId' . $i] = $row['groupId'];
+                        $i++;
+                    }
+                    $sql .= ')';
+                }
+                $stmt = $pdo->prepare('SELECT courseId FROM CourseStudent WHERE studentId = :student');
+                $stmt->bindParam(':student', $student);
+                $stmt->execute();
+                $resultCourse = $stmt->fetchAll();
+                if($resultCourse){
+                    $sql .= ' AND (';
+                    $i = 0;
+                    foreach($resultCourse as $row){
+                        if($i > 0){
+                            $sql .= ' OR ';
+                        }
+                        $sql .= 'Lesson.studyCourseId = :courseId' . $i;
+                        $params['courseId' . $i] = $row['courseId'];
+                        $i++;
+                    }
+                    $sql .= ')';
+                }
+            }
+        }
         $statement = $pdo->prepare($sql);
         $statement->execute($params);
         $filteredLessonsArray = $statement->fetchAll(\PDO::FETCH_ASSOC);
@@ -470,10 +520,21 @@ class Filter {
             $filteredLessons[] = self::fromArray($filteredLessonArray);
         }
 
+        $mostFrequentSemester = self::getMostFrequentSemester($filteredLessons);
+        $filteredLessons = array_filter($filteredLessons, function($lesson) use ($mostFrequentSemester) {
+            return $lesson->getSemester() === $mostFrequentSemester;
+        });
 
         return $filteredLessons;
     }
 
 
+    public static function getMostFrequentSemester(array $lessons): ?int {
+        $semesterCounts = array_count_values(array_map(function($lesson) {
+            return $lesson->getSemester();
+        }, $lessons));
 
+        arsort($semesterCounts);
+        return key($semesterCounts);
+    }
 }

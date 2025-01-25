@@ -74,19 +74,12 @@ class Student{
 
     public function save(){
         $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
-        if(!$this->getId()){
-            $stmt = $pdo->prepare('INSERT INTO Student (studyCourseId, departmentId) VALUES (:studyCourseId, :departmentId)');
+        $stmt = $pdo->prepare('SELECT * FROM Student WHERE id = :id');
+        $stmt->execute(['id' => $this->getId()]);
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if(!$result){
+            $stmt = $pdo->prepare('INSERT INTO Student (id) VALUES (:id)');
             $stmt->execute([
-                'studyCourseId' => $this->getStudyCourseId(),
-                'departmentId' => $this->getDepartmentId()
-            ]);
-            $this->setId((int)$pdo->lastInsertId());
-        }
-        else{
-            $stmt = $pdo->prepare('UPDATE Student SET studyCourseId = :studyCourseId, departmentId = :departmentId WHERE id = :id');
-            $stmt->execute([
-                'studyCourseId' => $this->getStudyCourseId(),
-                'departmentId' => $this->getDepartmentId(),
                 'id' => $this->getId()
             ]);
         }

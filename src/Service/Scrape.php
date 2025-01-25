@@ -10,7 +10,8 @@ use App\Model\StudyGroup;
 use App\Model\Subject;
 use App\Model\Teacher;
 use App\Model\Lesson;
-
+use App\Model\CourseStudent;
+use App\Service\Config;
 //@todo Modele, zmiany nazwy tabel
 
 class Scrape
@@ -279,14 +280,18 @@ class Scrape
             }
         }
     }
-    public function insertGrupaStudent(int $numer_albumu){
-        $apiURL = "https://plan.zut.edu.pl/schedule_student.php?number={$numer_albumu}&start=2024-10-1&end=2024-10-31";
+    public function insertGroupStudent(int $studentId){
+        $semester_start = Config::get('semester_start');
+        $semester_end = Config::get('semester_end');
+
+        $apiURL = "https://plan.zut.edu.pl/schedule_student.php?number={$studentId}&{$semester_start}&end={$semester_end}";
         $response = file_get_contents($apiURL);
         if(!$response) {
             die('No response');
         }
         $json = json_decode($response, true);
         $uniqueGroups = [];
+        $uniqueCourses = [];
 
         foreach ($json as $item) {
             if(isset($item['group_name'])){
@@ -295,22 +300,41 @@ class Scrape
                     $uniqueGroups[] = $grupa;
                 }
             }
+            if(isset($item['tok_name'])){
+                $tok_name = $item['tok_name'];
+                if (!in_array($tok_name, $uniqueCourses)) {
+                    $uniqueCourses[] = $tok_name;
+                }
+            }
         }
 
         // Insert the student using the Student model
         $studentModel = new Student();
-        $studentModel->setId($numer_albumu);
+        $studentModel->setId($studentId);
         $studentModel->save();
-
         // Insert the group-student relationships using the GroupStudent model
         foreach($uniqueGroups as $group){
             $groupModel = new StudyGroup();
             $groupResult = $groupModel->findStudyGroup($group);
             if($groupResult){
+
                 $groupStudentModel = new GroupStudent();
                 $groupStudentModel->setGroupId($groupResult->getId());
-                $groupStudentModel->setStudentId($numer_albumu);
+                $groupStudentModel->setStudentId($studentId);
                 $groupStudentModel->save();
+            }
+        }
+        // Insert the course-student relationships using the StudyCourse model
+        foreach($uniqueCourses as $course){
+            $studyCourseModel = new StudyCourse();
+            $studyCourseResult = $studyCourseModel->findAllStudyCourseByName($course);
+            if($studyCourseResult){
+                foreach($studyCourseResult as $courseTok){
+                    $courseStudentModel = new CourseStudent();
+                    $courseStudentModel->setCourseId($courseTok->getId());
+                    $courseStudentModel->setStudentId($studentId);
+                    $courseStudentModel->save();
+                }
             }
         }
     }
