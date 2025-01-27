@@ -95,4 +95,23 @@ class Subject{
             $stmt->execute(['name' => $this->getName(), 'form' => $this->getForm(), 'studyCourseId' => $this->getStudyCourseId(), 'id' => $this->getId()]);
         }
     }
+
+    public static function findSubjectByName($name=null): array{
+        $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
+        $stmt = $pdo->prepare('SELECT * FROM Subject WHERE name LIKE :name');
+        $stmt->execute(['name' => "%$name%"]);
+        $subjectsArray = $stmt->fetchAll();
+        $subjects = [];
+        foreach($subjectsArray as $subjectArray){
+            $subjects[] = self::fromArray($subjectArray);
+        }
+        return $subjects;
+    }
+
+    public function toArray(): array{
+        return [
+            'name' => $this->getName(),
+            'form' => $this->getForm(),
+        ];
+    }
 }

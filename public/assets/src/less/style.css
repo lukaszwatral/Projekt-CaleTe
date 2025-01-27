@@ -373,6 +373,9 @@ header .btn:active {
     font-size: 1rem;
   }
 }
+#event-popup {
+  font-size: 0.8rem;
+}
 #filterForm {
   width: 30%;
   float: left;
@@ -537,7 +540,7 @@ header .btn:active {
   color: #ffffff;
 }
 .dark-mode * {
-  background-color: #121212;
+  background-color: #1f1f1f;
   color: inherit !important;
 }
 .dark-mode h1,
@@ -549,7 +552,8 @@ header .btn:active {
   color: #ffffff !important;
 }
 .dark-mode a {
-  color: #bb86fc !important;
+  color: #ffffff !important;
+  background-color: #1e1e1e;
   text-decoration: none;
 }
 .dark-mode a:hover {
@@ -580,12 +584,12 @@ header .btn:active {
   border-collapse: collapse;
 }
 .dark-mode table th,
-.dark-mode table td {
+.dark-mode table td,
+.dark-mode table tr {
   border: 1px solid #444444;
-  padding: 10px;
 }
 .dark-mode table th {
-  background-color: #333333;
+  background-color: #1e1e1e;
   color: #ffffff;
 }
 .dark-mode table td {
@@ -595,10 +599,6 @@ header .btn:active {
   background-color: #1f1f1f !important;
   color: #ffffff !important;
 }
-.dark-mode #calendar .fc-event {
-  background-color: #333333 !important;
-  color: #ffffff !important;
-}
 .dark-mode header {
   background-color: #1e1e1e;
   border-bottom: 1px solid #333333;
@@ -606,5 +606,24 @@ header .btn:active {
 .dark-mode footer {
   background-color: #1e1e1e;
   color: #ffffff;
+}
+.dark-mode header img {
+  background: #1e1e1e;
+}
+.dark-mode .fc-header-toolbar,
+.dark-mode .fc-toolbar,
+.dark-mode .fc-toolbar-ltr,
+.dark-mode .fc {
+  background-color: #1f1f1f !important;
+  color: #ffffff;
+}
+.dark-mode #customization-buttons {
+  background-color: #1e1e1e;
+}
+.dark-mode .fc-scrollgrid-sync-inner {
+  color: #ffffff;
+}
+.dark-mode .fc-icon {
+  background-color: transparent;
 }
 /*# sourceMappingURL=style.css.map */

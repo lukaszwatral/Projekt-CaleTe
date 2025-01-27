@@ -1,92 +1,85 @@
 document.addEventListener('DOMContentLoaded', function () {
     var calendarEl = document.getElementById('calendar');
     var eventsCache = {};
-    var customEvent = [
-        {
-            title: 'Sieci komputerowe (L)',
-            start: '2025-01-07T10:15:00',
-            end: '2025-01-07T12:00:00',
-            description: 'Laboratorium z sieci komputerowych',
-            color: '#006b27',
-            extendedProps: {
-                teacher: 'Jan Kowalski',
-                room: 'B-123',
-                subject: 'Sieci komputerowe',
-                studyGroup: 'Informatyka',
-            }
-        },
-        {
-            title: 'Aplikacje internetowe (W)',
-            start: '2025-01-07T12:15:00',
-            end: '2025-01-07T14:00:00',
-            description: 'Wykład z aplikacji internetowych',
-            color: '#00809f'
-        },
-        {
-            title: 'Język Angielski (Lek)',
-            start: '2025-01-08T08:15:00',
-            end: '2025-01-08T10:00:00',
-            description: 'Lektorat z języka angielskiego',
-            color: '#ef9529'
-        },
-        {
-            title: 'IPZ (P)',
-            start: '2025-01-08T10:15:00',
-            end: '2025-01-08T12:00:00',
-            description: 'Projekt z IPZ',
-            color: '#5a6e02'
-        },
-        {
-            title: 'WF (A)',
-            start: '2025-01-09T12:15:00',
-            end: '2025-01-09T14:00:00',
-            description: 'Zajęcia audytoryjne z WF',
-            color: '#004ca8'
-        }
-    ];
 
-
-
-    async function fetchEvents(startDate, endDate) {
-        const cacheKey = `${startDate}_${endDate}`;
-        if (eventsCache[cacheKey]) {
-            return eventsCache[cacheKey];
-        }
-
-        console.log(`Fetching events from ${startDate} to ${endDate}`);
-        try {
-            const response = await fetch(url);
-            if (!response.ok) throw new Error('Failed to fetch events. Status: ' + response.status);
-
-            const data = await response.json();
-            console.log('Fetched events:', data);
-
-            const events = data.map(event => ({
-                title: event.title,
-                start: event.start,
-                end: event.end,
-                description: event.description,
-                color: event.color,
-                extendedProps: event.extendedProps
-            }));
-
-            eventsCache[cacheKey] = events;
-            return events;
-        } catch (error) {
-            console.error('Error fetching events:', error);
-            return [];
-        }
-    }
+    var teacher = document.getElementById('teacher');
+    var classroom = document.getElementById('classroom');
+    var subject = document.getElementById('subject');
+    var studyGroup = document.getElementById('studyGroup');
+    var department = document.getElementById('department');
+    var subjectForm = document.getElementById('subjectForm');
+    var studyCourse = document.getElementById('studyCourse');
+    var semester = document.getElementById('semester');
+    var yearOfStudy = document.getElementById('yearOfStudy');
+    var major = document.getElementById('major');
+    var specialisation = document.getElementById('specialisation');
+    var student = document.getElementById('student');
 
     var calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'timeGridWeek',
         firstDay: 1,
-        events: '../../index.php?action=event',
+        events: function(fetchInfo, successCallback, failureCallback) {
+            var url = '../../index.php?action=apiplan&subject=' + subject.value +
+                '&teacher=' + teacher.value +
+                '&classroom=' + classroom.value +
+                '&studyGroup=' + studyGroup.value +
+                '&department=' + department.value +
+                '&studyCourse=' + studyCourse.value +
+                '&semester=' + semester.value +
+                '&yearOfStudy=' + yearOfStudy.value +
+                '&major=' + major.value +
+                '&specialisation=' + specialisation.value +
+                '&subjectForm=' + subjectForm.value;
+
+            if (student.value) {
+                url += '&student=' + student.value;
+            }
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => successCallback(data))
+                .catch(error => failureCallback(error));
+        },
         loading: function (isLoading) {
             if (isLoading) {
                 console.log('Loading events...');
             } else {
                 console.log('Events loaded.');
+            }
+        },
+        eventMouseEnter: function(info) {
+            var description = info.event.extendedProps.description || 'No description available';
+            var eventDetails = `
+                <div id="event-popup">
+                    <p>${description}</p>
+                </div>
+            `;
+
+            var eventPopup = document.createElement('div');
+            eventPopup.innerHTML = eventDetails;
+
+            eventPopup.style.position = 'absolute';
+            eventPopup.style.backgroundColor = 'yellow';
+            eventPopup.style.width = '250px';
+            eventPopup.style.height = '100px';
+            eventPopup.style.border = '1px solid black';
+            eventPopup.style.borderRadius = '5px';
+            eventPopup.style.padding = '10px';
+            eventPopup.style.zIndex = 1000;
+
+            var eventElement = info.el;
+            var boundingRect = eventElement.getBoundingClientRect();
+
+            eventPopup.style.top = (window.scrollY + boundingRect.top - eventPopup.offsetHeight - 110) + 'px';
+            eventPopup.style.left = (window.scrollX + boundingRect.left) + 'px';
+
+            eventPopup.id = 'event-popup';
+            document.body.appendChild(eventPopup);
+        },
+        eventMouseLeave: function(info) {
+            var eventPopup = document.getElementById('event-popup');
+            if (eventPopup) {
+                eventPopup.remove();
             }
         },
         editable: false,
@@ -103,11 +96,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 type: 'dayGrid',
                 start: '2025-01-01',
                 end: '2025-12-31',
-                buttonText: 'semester'
+                buttonText: 'semestr'
             }
         },
+        buttonText: {
+            today: "dziś",
+            month: "miesiąc",
+            week: "tydzień",
+            day: "dzień",
+        },
         responsive: {
-
             0: {
                 initialView: 'listWeek',
                 headerToolbar: {
@@ -129,65 +127,7 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         locale: 'pl',
         allDaySlot: false,
-        // datesSet: (dateInfo) => {
-        //     console.log(`Date range changed: ${dateInfo.startStr} to ${dateInfo.endStr}`);
-        // },
     });
 
     calendar.render();
-
-    const changeFontBtn = document.getElementById('change-font-btn');
-    let isFontLarge = false;
-
-    changeFontBtn.addEventListener('click', () => {
-        if (isFontLarge) {
-            document.body.classList.remove('large-font');
-            isFontLarge = false;
-        } else {
-            document.body.classList.add('large-font');
-            isFontLarge = true;
-        }
-    });
-
-    const darkModeBtn = document.getElementById('dark-mode-btn');
-    let isDarkMode = false;
-
-    darkModeBtn.addEventListener('click', () => {
-        if (isDarkMode) {
-            document.body.classList.remove('dark-mode');
-            darkModeBtn.textContent = 'Ciemny motyw';
-            isDarkMode = false;
-        } else {
-            document.body.classList.add('dark-mode');
-            darkModeBtn.textContent = 'Jasny motyw';
-            isDarkMode = true;
-        }
-    });
-
-    const searchBtn = document.getElementById('search-btn');
-    const filterForm = document.querySelector('form[action*="main-index"]');
-
-    searchBtn.addEventListener('click', () => {
-        filterForm.submit();
-    });
-
-    const resetBtn = document.getElementById('reset-filters');
-
-    resetBtn.addEventListener('click', () => {
-        window.location.href = '/'
-    });
-
-    document.getElementById('toggle-view-btn').addEventListener('click', () => {
-        const views = ['timeGridWeek', 'dayGridMonth', 'listWeek'];
-        const currentView = calendar.view.type;
-        const nextView = views[(views.indexOf(currentView) + 1) % views.length];
-        calendar.changeView(nextView);
-    });
-
-    document.getElementById('calendar-format-btn').addEventListener('click', () => {
-        const views = ['timeGridWeek', 'timeGridDay', 'listWeek'];
-        const currentView = calendar.view.type;
-        const nextView = views[(views.indexOf(currentView) + 1) % views.length];
-        calendar.changeView(nextView);
-    });
 });

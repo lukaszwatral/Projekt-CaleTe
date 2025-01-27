@@ -281,8 +281,8 @@ class Scrape
         }
     }
     public function insertGroupStudent(int $studentId){
-        $semester_start = Config::get('semester_start');
-        $semester_end = Config::get('semester_end');
+        $semester_start = Config::get('semesters')[Config::get('current_semester')]['start'];
+        $semester_end = Config::get('semesters')[Config::get('current_semester')]['end'];
 
         $apiURL = "https://plan.zut.edu.pl/schedule_student.php?number={$studentId}&{$semester_start}&end={$semester_end}";
         $response = file_get_contents($apiURL);

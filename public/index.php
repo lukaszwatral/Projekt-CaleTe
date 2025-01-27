@@ -22,8 +22,12 @@ switch ($action) {
         $view = $controller->eventAction();
         break;
         case 'apiplan':
-        $controller = new \App\Controller\APIplanController();
-        $view = $controller->getData();
+        $controller = new \App\Controller\ApiPlanController();
+        $view = $controller->getLessons();
+        break;
+        case 'apiplansubject':
+        $controller = new \App\Controller\ApiPlanController();
+        $view = $controller->getSubjects();
         break;
 
     default:

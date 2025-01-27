@@ -1,12 +1,14 @@
 <?php
 
-/** @var \App\Model\Filter[] $filteredLessons */
+/** @var \App\Model\Lesson[] $filteredLessons */
 /** @var \App\Service\Router $router */
 
 $title = 'Plan Całe Te';
 $bodyClass = 'index';
 
 ob_start(); ?>
+
+
     <div id="history">
         <button type="button" id="historyBtn" class="btn">HISTORIA</button>
     </div>
@@ -50,6 +52,7 @@ ob_start(); ?>
         </div>
     </div>
     <script src="/assets/scripts/filter.js"></script>
+    <script src="/assets/scripts/buttons.js"></script>
 
 
 
@@ -70,9 +73,6 @@ ob_start(); ?>
 <!--        <button type="button" id="calendar-format-btn">Zmiana sposobu wyświetlania</button>-->
 <!--    </div>-->
 
-    <form id="filter-form" style="display: none;">
-        <?php include __DIR__ . '/../filter/_form.html.php'; ?>
-    </form>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
     <div id="calendar"></div>
     <div id="legend">
@@ -91,3 +91,4 @@ ob_start(); ?>
 <?php $main = ob_get_clean();
 
 include __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'base.html.php';
+
