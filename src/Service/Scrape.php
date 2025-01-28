@@ -12,22 +12,14 @@ use App\Model\Teacher;
 use App\Model\Lesson;
 use App\Model\CourseStudent;
 use App\Service\Config;
-//@todo Modele, zmiany nazwy tabel
 
 class Scrape
 {
-    //@todo Pamiętaj o ustawieniu PDO jak klase tworzysz
-    private \PDO $pdo;
-
-    public function __construct(\PDO $pdo) {
-        $this->pdo = $pdo;
-    }
-
     /**
      * @throws \Exception
      */
     public function scrapeData(string $department){
-        $apiURL = "https://plan.zut.edu.pl/schedule_student.php?kind=apiwi&department={$department}&start=2025-01-13&end=2025-01-19";
+        $apiURL = "https://plan.zut.edu.pl/schedule_student.php?kind=apiwi&department={$department}&start=2025-01-13&end=2025-02-14";
         $response = file_get_contents($apiURL);
         if(!$response) {
             die('No response');
@@ -157,7 +149,12 @@ class Scrape
                 $form = $item['lesson_form'];
                 $room = $item['room'];
                 $semester = $item['semestr'];
-                $this->insertLesson($id, $dateSstart, $dateEnd, $cover, $teacherFirstName, $teacherLastName, $teacherTitle, $department, $group, $tok_name, $shortType, $shortKind, $specialisation, $major, $subject, $form, $room, $semester);
+                $color = $item['color'];
+                if ($color == null) {
+                    $color = "Brak";
+                }
+                $lessonStatus = $item['lesson_status'];
+                $this->insertLesson($id, $dateSstart, $dateEnd, $cover, $teacherFirstName, $teacherLastName, $teacherTitle, $department, $group, $tok_name, $shortType, $shortKind, $specialisation, $major, $subject, $form, $room, $semester, $color, $lessonStatus);
             }
         }
     }
@@ -205,10 +202,11 @@ class Scrape
         if($result){
             $studyCourseId = $result->getId();
             $subjectModel = new Subject();
-            $result = $subjectModel->findSubject($subject, $form, $studyCourseId);
+            $result = $subjectModel->findSubject($subject, $form, $shortKind, $studyCourseId);
             if(!$result){
                 $subjectModel->setName($subject);
                 $subjectModel->setForm($form);
+                $subjectModel->setKindShort($shortKind);
                 $subjectModel->setStudyCourseId($studyCourseId);
                 $subjectModel->save();
             }
@@ -232,7 +230,7 @@ class Scrape
             $teacherModel->save();
         }
     }
-    private function insertLesson(int $id, string $dateSstart, string $dateEnd, string $cover, string $teacherFirstName,  string $teacherLastName, string $teacherTitle, string $department, string $group, string $tok_name, string $shortType, string $shortKind, string $specialisation, string $major, string $subject, string $form, string $room, int $semester){
+    private function insertLesson(int $id, string $dateSstart, string $dateEnd, string $cover, string $teacherFirstName,  string $teacherLastName, string $teacherTitle, string $department, string $group, string $tok_name, string $shortType, string $shortKind, string $specialisation, string $major, string $subject, string $form, string $room, int $semester, string $color, string $lessonStatus){
         $teacherModel = new Teacher();
         $teacherResult = $teacherModel->findTeacher($teacherFirstName, $teacherLastName, $teacherTitle);
         if($teacherResult){
@@ -250,7 +248,7 @@ class Scrape
                     if($studyCourseResult){
                         $studyCourseId = $studyCourseResult->getId();
                         $subjectModel = new Subject();
-                        $subjectResult = $subjectModel->findSubject($subject, $form, $studyCourseId);
+                        $subjectResult = $subjectModel->findSubject($subject, $form, $shortKind, $studyCourseId);
                         if($subjectResult){
                             $subjectId = $subjectResult->getId();
                             $roomBuildingModel = new RoomBuilding();
@@ -267,10 +265,12 @@ class Scrape
                                     $lessonModel->setSemester($semester);
                                     $lessonModel->setTeacherId($teacherId);
                                     $lessonModel->setDepartmentId($departmentId);
-                                    $lessonModel->setGroupId($groupId);
+                                    $lessonModel->setstudyGroupId($groupId);
                                     $lessonModel->setStudyCourseId($studyCourseId);
                                     $lessonModel->setSubjectId($subjectId);
-                                    $lessonModel->setRoomId($roomId);
+                                    $lessonModel->setclassroomId($roomId);
+                                    $lessonModel->setColor($color);
+                                    $lessonModel->setLessonStatus($lessonStatus);
                                     $lessonModel->save();
                                 }
                             }

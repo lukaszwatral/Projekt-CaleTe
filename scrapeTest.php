@@ -13,14 +13,11 @@ $username = $config['db_user'];
 $password = $config['db_pass'];
 
 try {
-    $pdo = new PDO($dsn, $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
 //    $sql = file_get_contents('C:\Users\smh2k\Desktop\ProjektNaApki\Projekt-Ca-eTe\sql\01-plan.sql'); // Adjust the path as necessary
 //    $pdo->exec($sql);
 
     // Create an instance of ScrapeData
-    $scrapeData = new \App\Service\Scrape($pdo);
+    $scrapeData = new \App\Service\Scrape();
 
     // Call the scrapeData method with the department parameter
     $departmentTable = array('WI','WE','WA','WEkon','WTMiT','WTiICH','WBiIS','WIMiM','WNoZiR','WBiHZ','WKSiR');

@@ -30,6 +30,8 @@ class Lesson{
     private ?string $major = null;
     private ?string $specialisation = null;
 
+    private ?string $color = null;
+    private ?string $lessonStatus = null;
     public function getId(): ?int
     {
         return $this->id;
@@ -250,6 +252,24 @@ class Lesson{
         $this->specialisation = $specialisation;
     }
 
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+    public function setColor(?string $color): void
+    {
+        $this->color = $color;
+    }
+
+    public function getLessonStatus(): ?string
+    {
+        return $this->lessonStatus;
+    }
+    public function setLessonStatus(?string $lessonStatus): void
+    {
+        $this->lessonStatus = $lessonStatus;
+    }
+
     public static function fromArray($array): Lesson
     {
         $lesson = new self();
@@ -324,7 +344,12 @@ class Lesson{
         if (isset($array['specialisation'])) {
             $this->setSpecialisation($array['specialisation']);
         }
-
+        if (isset($array['color'])) {
+            $this->setColor($array['color']);
+        }
+        if (isset($array['lessonStatus'])) {
+            $this->setLessonStatus($array['lessonStatus']);
+        }
         return $this;
     }
 
@@ -356,9 +381,9 @@ class Lesson{
         $existingLesson = $this->findLesson($this->getId());
 
         if (!$existingLesson) {
-            $stmt = $pdo->prepare('INSERT INTO Lesson (id, dateStart, dateEnd, teacherCover, semester, teacherId, departmentId, groupId, studyCourseId, subjectId, roomId) VALUES (:id, :dateStart, :dateEnd, :teacherCover, :semester, :teacherId, :departmentId, :groupId, :studyCourseId, :subjectId, :roomId)');
+            $stmt = $pdo->prepare('INSERT INTO Lesson (id, dateStart, dateEnd, teacherCover, semester, teacherId, departmentId, groupId, studyCourseId, subjectId, roomId, color, lessonStatus) VALUES (:id, :dateStart, :dateEnd, :teacherCover, :semester, :teacherId, :departmentId, :groupId, :studyCourseId, :subjectId, :roomId, :color, :lessonStatus)');
         } else {
-            $stmt = $pdo->prepare('UPDATE Lesson SET dateStart = :dateStart, dateEnd = :dateEnd, teacherCover = :teacherCover, semester = :semester, teacherId = :teacherId, departmentId = :departmentId, groupId = :groupId, studyCourseId = :studyCourseId, subjectId = :subjectId, roomId = :roomId WHERE id = :id');
+            $stmt = $pdo->prepare('UPDATE Lesson SET dateStart = :dateStart, dateEnd = :dateEnd, teacherCover = :teacherCover, semester = :semester, teacherId = :teacherId, departmentId = :departmentId, groupId = :groupId, studyCourseId = :studyCourseId, subjectId = :subjectId, roomId = :roomId, color = :color, lessonStatus = :lessonStatus WHERE id = :id');
         }
         $stmt->execute([
             'id' => $this->getId(),
@@ -368,10 +393,12 @@ class Lesson{
             'semester' => $this->getSemester(),
             'teacherId' => $this->getTeacherId(),
             'departmentId' => $this->getDepartmentId(),
-            'groupId' => $this->getGroupId(),
+            'groupId' => $this->getstudyGroupId(),
             'studyCourseId' => $this->getStudyCourseId(),
             'subjectId' => $this->getSubjectId(),
-            'roomId' => $this->getRoomId()
+            'roomId' => $this->getclassroomId(),
+            'color' => $this->getColor(),
+            'lessonStatus' => $this->getLessonStatus()
         ]);
     }
 
@@ -563,7 +590,7 @@ class Lesson{
         return key($semesterCounts);
     }
 
-    public function toArray($teacher = null, $subject = null, $classroom = null, $studyGroup = null, $department = null, $subjectForm = null, $studyCourse = null, $semester = null, $yearOfStudy = null, $student = null, $major = null, $specialisation = null, $start = null, $end = null): array {
+    public function toArray($teacher = null, $subject = null, $classroom = null, $studyGroup = null, $department = null, $subjectForm = null, $studyCourse = null, $semester = null, $yearOfStudy = null, $student = null, $major = null, $specialisation = null, $start = null, $end = null, $color = null, $lessonStatus = null): array {
         $event =  [
             'title' => $this->getSubjectName() . "" . $this->getClassroomName(),
             'start' => $this->getDateStart(),
@@ -578,6 +605,8 @@ class Lesson{
             'yearOfStudy' => $this->getYearOfStudy(),
             'major' => $this->getMajor(),
             'specialisation' => $this->getSpecialisation(),
+            'color' => $this->getColor(),
+            'lessonStatus' => $this->getLessonStatus(),
             'id' => $this->getId(),
             'description' => $this->getSubjectName() . ", prowadzący " . $this->getTeacherName() . ", sala " . $this->getClassroomName() . ", grupa " . $this->getStudyGroupName() . " - " . $this->getSubjectForm(),
         ];
