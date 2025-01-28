@@ -117,6 +117,45 @@ class StudyCourse{
         return $studyCourses;
     }
 
+    public static function findById(int $id): ?StudyCourse
+    {
+        $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
+        $stmt = $pdo->prepare('SELECT * FROM StudyCourse WHERE id = :id');
+        $stmt->execute(['id' => $id]);
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if ($result === false) {
+            return null;
+        }
+        return self::fromArray($result);
+    }
+
+    public static function findStudyCourseByName(string $tokName): ?array
+    {
+        $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
+        $stmt = $pdo->prepare('SELECT * FROM StudyCourse WHERE tokName LIKE :tokName');
+        $stmt->execute(['tokName' => "%$tokName%"]);
+        $result = $stmt->fetchAll();
+        if ($result === false) {
+            return null; // No study course found
+        }
+        foreach ($result as $studyCourseArray) {
+            $studyCourses[] = self::fromArray($studyCourseArray);
+        }
+        return $studyCourses;
+    }
+
+
+    public static function getMajorByName($major): ?string
+    {
+        $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
+        $stmt = $pdo->prepare('SELECT major FROM StudyCourse WHERE major = :major');
+        $stmt->execute(['major' => $major]);
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if ($result === false) {
+            return null; // No major found
+        }
+        return $result['major'];
+    }
     public function save(){
         $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
         if(!$this->getId()){
@@ -128,5 +167,15 @@ class StudyCourse{
             $stmt = $pdo->prepare('UPDATE StudyCourse SET tokName = :tokName, shortType = :shortType, shortKind = :shortKind, specialisation = :specialisation, major = :major WHERE id = :id');
             $stmt->execute(['tokName' => $this->getTokName(), 'shortType' => $this->getShortType(), 'shortKind' => $this->getShortKind(), 'specialisation' => $this->getSpecialisation(), 'major' => $this->getMajor(), 'id' => $this->getId()]);
         }
+    }
+
+    public function toArray(): array{
+        return [
+            'tokName' => $this->getTokName(),
+            'shortType' => $this->getShortType(),
+            'shortKind' => $this->getShortKind(),
+            'specialisation' => $this->getSpecialisation(),
+            'major' => $this->getMajor()
+        ];
     }
 }

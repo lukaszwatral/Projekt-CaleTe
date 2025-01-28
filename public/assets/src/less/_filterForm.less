@@ -1,4 +1,4 @@
-#filterForm{
+#filterForm {
   width: 30%;
   float: left;
   margin-left: auto;
@@ -6,14 +6,14 @@
   text-align: center;
   font-size: 1.2rem;
   font-weight: bold;
-    margin-top: 2rem;
+  margin-top: 2rem;
 
   label {
     color: darkblue;
     font-size: 1.2rem;
     font-weight: bold;
     margin-top: 10px;
-}
+  }
 
   input {
     width: 80%;
@@ -22,6 +22,7 @@
     font-size: 1.2rem;
     border-radius: 10px;
     height: 40px;
+    position: relative; /* Ensure the input field is positioned relative */
   }
 
   .button-container {
@@ -51,10 +52,30 @@
   #history {
   }
 
+  .suggestions {
+    position: absolute;
+    background-color: white;
+    //border: 1px solid #ccc;
+    max-height: 150px; /* Adjust the height as needed */
+    overflow-y: auto;
+    z-index: 1000;
+    width: 20%; /* Match the width of the input fields */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 5px; /* Add some space between the input and the suggestions */
+    left: 10%; /* Align the suggestions container with the input field */
+  }
+
+  .suggestions div {
+    padding: 8px;
+    cursor: pointer;
+  }
+
+  .suggestions div:hover {
+    background-color: #f0f0f0;
+  }
+
   @media (max-width: @mobileBreakpoint) {
     width: 100%;
     margin-top: 1rem;
-
   }
-
 }

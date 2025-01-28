@@ -399,6 +399,8 @@ header .btn:active {
   font-size: 1.2rem;
   border-radius: 10px;
   height: 40px;
+  position: relative;
+  /* Ensure the input field is positioned relative */
 }
 #filterForm .button-container {
   display: flex;
@@ -417,6 +419,28 @@ header .btn:active {
   background-color: #5353ec;
   color: white;
   cursor: pointer;
+}
+#filterForm .suggestions {
+  position: absolute;
+  background-color: white;
+  max-height: 150px;
+  /* Adjust the height as needed */
+  overflow-y: auto;
+  z-index: 1000;
+  width: 20%;
+  /* Match the width of the input fields */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 5px;
+  /* Add some space between the input and the suggestions */
+  left: 10%;
+  /* Align the suggestions container with the input field */
+}
+#filterForm .suggestions div {
+  padding: 8px;
+  cursor: pointer;
+}
+#filterForm .suggestions div:hover {
+  background-color: #f0f0f0;
 }
 @media (max-width: 1024px) {
   #filterForm {

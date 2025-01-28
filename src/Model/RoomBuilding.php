@@ -73,6 +73,17 @@ class RoomBuilding{
         return self::fromArray($result);
     }
 
+    public static function findRoomBuildingByName($name): array {
+        $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
+        $stmt = $pdo->prepare('SELECT * FROM RoomBuilding WHERE buildingRoom LIKE :buildingRoom');
+        $stmt->execute(['buildingRoom' => '%' . $name . '%']);
+        $roomsArray = $stmt->fetchAll();
+        $rooms = [];
+        foreach ($roomsArray as $roomArray) {
+            $rooms[] = self::fromArray($roomArray);
+        }
+        return $rooms;
+    }
     public function save(){
         $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
 
@@ -85,5 +96,11 @@ class RoomBuilding{
             $stmt = $pdo->prepare('UPDATE RoomBuilding SET buildingRoom = :buildingRoom, departmentId = :departmentId WHERE id = :id');
             $stmt->execute(['buildingRoom' => $this->getBuildingRoom(), 'departmentId' => $this->getDepartmentId(), 'id' => $this->getId()]);
         }
+    }
+
+    public function toArray(): array {
+        return [
+            'classroom' => $this->getBuildingRoom(),
+        ];
     }
 }

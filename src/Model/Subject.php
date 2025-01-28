@@ -3,6 +3,7 @@ namespace App\Model;
 
 use App\Service\Config;
 use App\Service\Scrape;
+use App\Model\StudyCourse;
 
 class Subject{
     private ?int $id = null;
@@ -123,7 +124,7 @@ class Subject{
     public static function findSubjectByName($name=null): array{
         $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
         $stmt = $pdo->prepare('SELECT * FROM Subject WHERE name LIKE :name');
-        $stmt->execute(['name' => "%$name%"]);
+        $stmt->execute(['name' => '%' . $name . '%']);
         $subjectsArray = $stmt->fetchAll();
         $subjects = [];
         foreach($subjectsArray as $subjectArray){
@@ -134,7 +135,8 @@ class Subject{
 
     public function toArray(): array{
         return [
-            'name' => $this->getName(),
+//        'name' => $this->getName() . " (" . StudyCourse::findById($this->getStudyCourseId())->getMajor() . ", " . StudyCourse::findById($this->getStudyCourseId())->getShortKind() . ", " . StudyCourse::findById($this->getStudyCourseId())->getShortType() . ")",
+          'name' => $this->getName(),
         ];
     }
 }

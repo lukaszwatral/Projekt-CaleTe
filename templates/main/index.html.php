@@ -14,41 +14,58 @@ ob_start(); ?>
     </div>
     <div id="filterForm">
         <div class="filterContainer">
-        <form action="<?= $router->generatePath('main-index') ?>" method="get">
-            <label for="teacher">Wykładowca:</label><br>
-            <input type="text" id="teacher" name="teacher" value="<?= htmlspecialchars($_GET['teacher'] ?? '') ?>"><br>
-            <label for="classroom">Sala:</label><br>
-            <input type="text" id="classroom" name="classroom" value="<?= htmlspecialchars($_GET['classroom'] ?? '') ?>"><br>
-            <label for="subject">Przedmiot:</label><br>
-            <input type="text" id="subject" name="subject" value="<?= htmlspecialchars($_GET['subject'] ?? '') ?>"><br>
-            <label for="studyGroup">Grupa:</label><br>
-            <input type="text" id="studyGroup" name="studyGroup" value="<?= htmlspecialchars($_GET['studyGroup'] ?? '') ?>"><br>
-            <label for="student">Numer albumu:</label><br>
-            <input type="text" id="student" name="student" value="<?= htmlspecialchars($_GET['student'] ?? '') ?>"><br>
+            <form action="<?= $router->generatePath('main-index') ?>" method="get">
+                <label for="teacher">Wykładowca:</label><br>
+                <input type="text" id="teacher" name="teacher" value="<?= htmlspecialchars($_GET['teacher'] ?? '') ?>"><br>
+                <div id="teacherSuggestions" class="suggestions"></div>
 
-            <div id="advanced-filters" style="display: none;">
-                <label for="department">Wydział:</label><br>
-                <input type="text" id="department" name="department" value="<?= htmlspecialchars($_GET['department'] ?? '') ?>"><br>
-                <label for="subjectForm">Forma przedmiotu:</label><br>
-                <input type="text" id="subjectForm" name="subjectForm" value="<?= htmlspecialchars($_GET['subjectForm'] ?? '') ?>"><br>
-                <label for="studyCourse">Tok studiów:</label><br>
-                <input type="text" id="studyCourse" name="studyCourse" value="<?= htmlspecialchars($_GET['studyCourse'] ?? '') ?>"><br>
-                <label for="semester">Semestr:</label><br>
-                <input type="text" id="semester" name="semester" value="<?= htmlspecialchars($_GET['semester'] ?? '') ?>"><br>
-                <label for="yearOfStudy">Rok studiów:</label><br>
-                <input type="text" id="yearOfStudy" name="yearOfStudy" value="<?= htmlspecialchars($_GET['yearOfStudy'] ?? '') ?>"><br>
-                <label for="major">Kierunek:</label><br>
-                <input type="text" id="major" name="major" value="<?= htmlspecialchars($_GET['major'] ?? '') ?>"><br>
-                <label for="specialisation">Specjalizacja:</label><br>
-                <input type="text" id="specialisation" name="specialisation" value="<?= htmlspecialchars($_GET['specialisation'] ?? '') ?>"><br>
-            </div>
+                <label for="classroom">Sala:</label><br>
+                <input type="text" id="classroom" name="classroom" value="<?= htmlspecialchars($_GET['classroom'] ?? '') ?>"><br>
+                <div id="classroomSuggestions" class="suggestions"></div>
 
-            <div class="button-container">
-                <button type="button" id="toggle-advanced-filters" class="btn">Filtry zaawansowane</button>
-                <button type="button" id="search-btn" class="btn">Szukaj</button>
-                <button type="button" id="reset-filters" class="btn">Wyczyść filtry</button>
-            </div>
-        </form>
+                <label for="subject">Przedmiot:</label><br>
+                <input type="text" id="subject" name="subject" value="<?= htmlspecialchars($_GET['subject'] ?? '') ?>"><br>
+                <div id="subjectSuggestions" class="suggestions"></div>
+
+                <label for="studyGroup">Grupa:</label><br>
+                <input type="text" id="studyGroup" name="studyGroup" value="<?= htmlspecialchars($_GET['studyGroup'] ?? '') ?>"><br>
+                <div id="studyGroupSuggestions" class="suggestions"></div>
+
+                <label for="student">Numer albumu:</label><br>
+                <input type="text" id="student" name="student" value="<?= htmlspecialchars($_GET['student'] ?? '') ?>"><br>
+                <div id="studentSuggestions" class="suggestions"></div>
+
+                <div id="advanced-filters" style="display: none;">
+                    <label for="department">Wydział:</label><br>
+                    <input type="text" id="department" name="department" value="<?= htmlspecialchars($_GET['department'] ?? '') ?>"><br>
+                    <div id="departmentSuggestions" class="suggestions"></div>
+
+                    <label for="subjectForm">Forma przedmiotu:</label><br>
+                    <input type="text" id="subjectForm" name="subjectForm" value="<?= htmlspecialchars($_GET['subjectForm'] ?? '') ?>"><br>
+                    <div id="subjectFormSuggestions" class="suggestions"></div>
+
+                    <label for="studyCourse">Tok studiów:</label><br>
+                    <input type="text" id="studyCourse" name="studyCourse" value="<?= htmlspecialchars($_GET['studyCourse'] ?? '') ?>"><br>
+                    <div id="studyCourseSuggestions" class="suggestions"></div>
+
+                    <label for="semester">Semestr:</label><br>
+                    <input type="text" id="semester" name="semester" value="<?= htmlspecialchars($_GET['semester'] ?? '') ?>"><br>
+
+                    <label for="yearOfStudy">Rok studiów:</label><br>
+                    <input type="text" id="yearOfStudy" name="yearOfStudy" value="<?= htmlspecialchars($_GET['yearOfStudy'] ?? '') ?>"><br>
+                    <label for="major">Kierunek:</label><br>
+                    <input type="text" id="major" name="major" value="<?= htmlspecialchars($_GET['major'] ?? '') ?>"><br>
+
+                    <label for="specialisation">Specjalizacja:</label><br>
+                    <input type="text" id="specialisation" name="specialisation" value="<?= htmlspecialchars($_GET['specialisation'] ?? '') ?>"><br>
+                </div>
+
+                <div class="button-container">
+                    <button type="button" id="toggle-advanced-filters" class="btn">Filtry zaawansowane</button>
+                    <button type="button" id="search-btn" class="btn">Szukaj</button>
+                    <button type="button" id="reset-filters" class="btn">Wyczyść filtry</button>
+                </div>
+            </form>
         </div>
     </div>
     <script src="/assets/scripts/filter.js"></script>
@@ -78,11 +95,12 @@ ob_start(); ?>
     <div id="legend">
         <h2>Legenda</h2>
         <ul class="legend-list">
-            <li><span class="color-box" style="background-color: #006b27;"></span> Laboratoria</li>
+            <li><span class="color-box" style="background-color: #006b27;"></span> Laboratorium</li>
             <li><span class="color-box" style="background-color: #00809f;"></span> Wykład</li>
             <li><span class="color-box" style="background-color: #ef9529;"></span> Lektorat</li>
             <li><span class="color-box" style="background-color: #5a6e02;"></span> Projekt</li>
             <li><span class="color-box" style="background-color: #004ca8;"></span> Audytoryjne</li>
+            <li><span class="color-box" style="background-color: #a8a8a8;"></span> Odwołane</li>
         </ul>
         <p>Total Lessons: <?= htmlspecialchars($counts['totalLessons']) ?></p>
         <p>Lessons in Current Week: <?= htmlspecialchars($counts['currentWeekLessons']) ?></p>

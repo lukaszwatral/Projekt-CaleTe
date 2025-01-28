@@ -81,6 +81,33 @@ class Teacher{
         return self::fromArray($result);
     }
 
+    public static function findTeacherByName(string $fullName): array {
+        $nameParts = explode(' ', $fullName);
+        $firstName = $nameParts[0];
+        $lastName = $nameParts[1] ?? '';
+        $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
+        $stmt = $pdo->prepare('SELECT * FROM Teacher WHERE (firstName LIKE :fullName OR lastName LIKE :fullName)');
+        $stmt->execute(['fullName' => '%' . $fullName . '%']);
+        $teachersArray = $stmt->fetchAll();
+        $teachers = [];
+        foreach ($teachersArray as $teacherArray) {
+            $teachers[] = self::fromArray($teacherArray);
+        }
+        return $teachers;
+    }
+
+    public static function findById(int $id): ?Teacher
+    {
+        $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
+        $stmt = $pdo->prepare('SELECT * FROM Teacher WHERE id = :id');
+        $stmt->execute(['id' => $id]);
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if ($result === false) {
+            return null;
+        }
+        return self::fromArray($result);
+    }
+
     public function save(){
         $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
         if(!$this->getId()){
@@ -92,5 +119,11 @@ class Teacher{
             $stmt = $pdo->prepare('UPDATE Teacher SET firstName = :firstName, lastName = :lastName, title = :title WHERE id = :id');
             $stmt->execute(['firstName' => $this->getFirstName(), 'lastName' => $this->getLastName(), 'title' => $this->getTitle(), 'id' => $this->getId()]);
         }
+    }
+
+    public function toArray() {
+        return [
+            'fullName' => $this->getFirstName() . ' ' . $this->getLastName(),
+        ];
     }
 }

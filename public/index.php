@@ -18,19 +18,14 @@ switch ($action) {
         $view = $controller->indexAction($templating, $router);
         $controller->displayLessonCounts();
         break;
-    case 'event':
-        $controller = new \App\Controller\FilterController();
-        $view = $controller->eventAction();
-        break;
         case 'apiplan':
         $controller = new \App\Controller\ApiPlanController();
         $view = $controller->getLessons();
         break;
-        case 'apiplansubject':
+        case 'apiplan2':
         $controller = new \App\Controller\ApiPlanController();
-        $view = $controller->getSubjects();
+        $view = $controller->getByType();
         break;
-
     default:
         $view = 'Not found';
         break;

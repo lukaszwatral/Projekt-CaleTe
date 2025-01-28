@@ -4,6 +4,11 @@ namespace App\Controller;
 use App\Model\Filter;
 use App\Model\Lesson;
 use App\Model\Subject;
+use App\Model\Teacher;
+use App\Model\Department;
+use App\Model\StudyCourse;
+use App\Model\RoomBuilding;
+use App\Model\StudyGroup;
 
 class ApiPlanController
 {
@@ -36,19 +41,42 @@ class ApiPlanController
 
         header('Content-Type: application/json');
         return json_encode($filteredLessonsArray);
-
     }
 
-    public function getSubjects() {
-        $name = $_GET['name'] ?? null;
 
-        $filteredSubjects = Subject::findSubjectByName($name);
+    public function getByType() {
+        $kind = $_GET['kind'] ?? null;
+        $query = $_GET['query'] ?? '';
 
-        $filteredSubjectsArray = [];
-        foreach ($filteredSubjects as $subject) {
-            $filteredSubjectsArray[] = $subject->toArray();
+        if ($kind) {
+            switch ($kind) {
+                case 'subject':
+                    $items = empty($query) ? Subject::findAll() : Subject::findSubjectByName($query);
+                    break;
+                case 'teacher':
+                    $items = empty($query) ? Teacher::findAll() : Teacher::findTeacherByName($query);
+                    break;
+                case 'classroom':
+                    $items = empty($query) ? RoomBuilding::findAll() : RoomBuilding::findRoomBuildingByName($query);
+                    break;
+                case 'studygroup':
+                    $items = empty($query) ? StudyGroup::findAll() : StudyGroup::findStudyGroupByName($query);
+                    break;
+                case 'department':
+                    $items = empty($query) ? Department::findAll() : Department::findDepartmentByName($query);
+                    break;
+                case 'studycourse':
+                    $items = empty($query) ? StudyCourse::findAll() : StudyCourse::findStudyCourseByName($query);
+                    break;
+                default:
+                    $items = [];
+            }
+
+            $responseArray = array_map(fn($item) => $item->toArray(), $items);
+
+            header('Content-Type: application/json');
+            return json_encode($responseArray);
         }
-
-        header('Content-Type: application/json');
-        return json_encode($filteredSubjectsArray); }
+        return json_encode([]);
+    }
 }

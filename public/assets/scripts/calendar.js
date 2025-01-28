@@ -18,7 +18,12 @@ document.addEventListener('DOMContentLoaded', function () {
     var calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'timeGridWeek',
         firstDay: 1,
+
         events: function(fetchInfo, successCallback, failureCallback) {
+            if (!teacher.value && !classroom.value && !subject.value && !studyGroup.value && !department.value && !subjectForm.value && !studyCourse.value && !semester.value && !yearOfStudy.value && !major.value && !specialisation.value && !student.value) {
+                successCallback([]);
+                return;
+            }
             var url = '../../index.php?action=apiplan&subject=' + subject.value +
                 '&teacher=' + teacher.value +
                 '&classroom=' + classroom.value +
@@ -41,11 +46,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 .catch(error => failureCallback(error));
         },
         loading: function (isLoading) {
-            if (isLoading) {
-                console.log('Loading events...');
-            } else {
-                console.log('Events loaded.');
-            }
         },
         eventMouseEnter: function(info) {
             var description = info.event.extendedProps.description || 'No description available';
@@ -56,6 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
             `;
 
             var eventPopup = document.createElement('div');
+            eventPopup.setAttribute('class', 'event-popup');
             eventPopup.innerHTML = eventDetails;
 
             eventPopup.style.position = 'absolute';
@@ -127,6 +128,7 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         locale: 'pl',
         allDaySlot: false,
+
         datesSet: function(info) {
             var startOfWeek = info.startStr;
             var endOfWeek = info.endStr;
@@ -139,6 +141,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
         }
     });
+
 
     calendar.render();
 });

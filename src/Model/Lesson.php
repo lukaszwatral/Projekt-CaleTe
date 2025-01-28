@@ -407,26 +407,25 @@ class Lesson{
         $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
 
         $sql = 'SELECT Lesson.*,
-                   (Teacher.firstName || " " || Teacher.lastName) AS teacherName,
-                   Subject.name AS subjectName,
-                   Subject.form AS subjectForm,
-                   RoomBuilding.buildingRoom AS classroomName,
-                   StudyGroup.name AS studyGroupName,
-                   Department.name AS departmentName,
-                   StudyCourse.tokName AS studyCourseName,
-                   StudyCourse.major AS major,
-                   StudyCourse.specialisation AS specialisation
-            FROM Lesson
-            LEFT JOIN Teacher ON Lesson.teacherId = Teacher.id
-            LEFT JOIN Subject ON Lesson.subjectId = Subject.id
-            LEFT JOIN RoomBuilding ON Lesson.roomId = RoomBuilding.id
-            LEFT JOIN StudyGroup ON Lesson.groupId = StudyGroup.id
-            LEFT JOIN Department ON Lesson.departmentId = Department.id
-            LEFT JOIN StudyCourse ON Lesson.studyCourseId = StudyCourse.id
-            WHERE 1=1';
+               (Teacher.firstName || " " || Teacher.lastName) AS teacherName,
+               Subject.name AS subjectName,
+               Subject.form AS subjectForm,
+               RoomBuilding.buildingRoom AS classroomName,
+               StudyGroup.name AS studyGroupName,
+               Department.name AS departmentName,
+               StudyCourse.tokName AS studyCourseName,
+               StudyCourse.major AS major,
+               StudyCourse.specialisation AS specialisation
+        FROM Lesson
+        LEFT JOIN Teacher ON Lesson.teacherId = Teacher.id
+        LEFT JOIN Subject ON Lesson.subjectId = Subject.id
+        LEFT JOIN RoomBuilding ON Lesson.roomId = RoomBuilding.id
+        LEFT JOIN StudyGroup ON Lesson.groupId = StudyGroup.id
+        LEFT JOIN Department ON Lesson.departmentId = Department.id
+        LEFT JOIN StudyCourse ON Lesson.studyCourseId = StudyCourse.id
+        WHERE 1=1';
 
         $params = [];
-
 
         if($start != null){
             $sql .= ' AND Lesson.dateStart >= :start';
@@ -438,32 +437,37 @@ class Lesson{
         }
         if ($teacher != null) {
             $teacherArray = explode(" ", $teacher);
-            $sql .= ' AND Teacher.firstName = :firstName AND Teacher.lastName = :lastName';
-            $params['firstName'] = $teacherArray[0];
-            $params['lastName'] = $teacherArray[1];
+            if (count($teacherArray) == 2) {
+                $sql .= ' AND ((LOWER(Teacher.firstName) = LOWER(:firstName1) AND LOWER(Teacher.lastName) = LOWER(:lastName1))';
+                $sql .= ' OR (LOWER(Teacher.firstName) = LOWER(:firstName2) AND LOWER(Teacher.lastName) = LOWER(:lastName2)))';
+                $params['firstName1'] = $teacherArray[0];
+                $params['lastName1'] = $teacherArray[1];
+                $params['firstName2'] = $teacherArray[1];
+                $params['lastName2'] = $teacherArray[0];
+            }
         }
         if ($subject != null) {
-            $sql .= ' AND Subject.name = :subject';
+            $sql .= ' AND LOWER(Subject.name) = LOWER(:subject)';
             $params['subject'] = $subject;
         }
         if ($classroom != null) {
-            $sql .= ' AND RoomBuilding.buildingRoom = :classroom';
+            $sql .= ' AND LOWER(RoomBuilding.buildingRoom) = LOWER(:classroom)';
             $params['classroom'] = $classroom;
         }
         if ($studyGroup != null) {
-            $sql .= ' AND StudyGroup.name = :studyGroup';
+            $sql .= ' AND LOWER(StudyGroup.name) = LOWER(:studyGroup)';
             $params['studyGroup'] = $studyGroup;
         }
         if ($department != null) {
-            $sql .= ' AND Department.name = :department';
-            $params['department'] = $department;
+            $sql .= ' AND LOWER(Department.name) LIKE LOWER(:department)';
+            $params['department'] = '%' . $department . '%';
         }
         if ($subjectForm != null) {
-            $sql .= ' AND Subject.form = :subjectForm';
+            $sql .= ' AND LOWER(Subject.form) = LOWER(:subjectForm)';
             $params['subjectForm'] = $subjectForm;
         }
         if ($studyCourse != null) {
-            $sql .= ' AND StudyCourse.tokName = :studyCourse';
+            $sql .= ' AND LOWER(StudyCourse.tokName) = LOWER(:studyCourse)';
             $params['studyCourse'] = $studyCourse;
         }
         if ($semester != null) {
@@ -476,11 +480,11 @@ class Lesson{
             $params['yearOfStudy2'] = $yearOfStudy * 2;
         }
         if ($major != null) {
-            $sql .= ' AND StudyCourse.major = :major';
+            $sql .= ' AND LOWER(StudyCourse.major) = LOWER(:major)';
             $params['major'] = $major;
         }
         if($specialisation != null){
-            $sql .= ' AND StudyCourse.specialisation = :specialisation';
+            $sql .= ' AND LOWER(StudyCourse.specialisation) = LOWER(:specialisation)';
             $params['specialisation'] = $specialisation;
         }
         if($student != null){
@@ -590,7 +594,7 @@ class Lesson{
         return key($semesterCounts);
     }
 
-    public function toArray($teacher = null, $subject = null, $classroom = null, $studyGroup = null, $department = null, $subjectForm = null, $studyCourse = null, $semester = null, $yearOfStudy = null, $student = null, $major = null, $specialisation = null, $start = null, $end = null, $color = null, $lessonStatus = null): array {
+    public function toArray(): array {
         $event =  [
             'title' => $this->getSubjectName() . " (" . Subject::findById($this->getSubjectId())->getShortForm() . ")",
             'start' => $this->getDateStart(),
@@ -609,7 +613,7 @@ class Lesson{
             'color' => $this->getColor(),
             'lessonStatus' => $this->getLessonStatus(),
             'id' => $this->getId(),
-            'description' => $this->getSubjectName() . " (" . Subject::findById($this->getSubjectId())->getShortForm() . ")" .", prowadzący " . $this->getTeacherName() . ", sala " . $this->getClassroomName() . ", grupa " . $this->getStudyGroupName() . " - " . $this->getLessonStatus(),
+            'description' => $this->getSubjectName() . " (" . Subject::findById($this->getSubjectId())->getShortForm() . ")" .", prowadzący " . Teacher::findById($this->getTeacherId())->getTitle() . " " . $this->getTeacherName() . ", sala " . $this->getClassroomName() . ", grupa " . $this->getStudyGroupName() . " - " . $this->getLessonStatus(),
         ];
         return $event;
     }
