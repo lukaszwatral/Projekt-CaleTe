@@ -84,6 +84,8 @@ ob_start(); ?>
             <li><span class="color-box" style="background-color: #5a6e02;"></span> Projekt</li>
             <li><span class="color-box" style="background-color: #004ca8;"></span> Audytoryjne</li>
         </ul>
+        <p>Total Lessons: <?= htmlspecialchars($counts['totalLessons']) ?></p>
+        <p>Lessons in Current Week: <?= htmlspecialchars($counts['currentWeekLessons']) ?></p>
     </div>
     <script src="https://unpkg.com/tippy.js@6"></script>
     <script src="/assets/scripts/calendar.js"></script>

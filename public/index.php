@@ -16,6 +16,7 @@ switch ($action) {
     case null:
         $controller = new \App\Controller\FilterController();
         $view = $controller->indexAction($templating, $router);
+        $controller->displayLessonCounts();
         break;
     case 'event':
         $controller = new \App\Controller\FilterController();

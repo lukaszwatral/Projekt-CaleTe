@@ -127,6 +127,17 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         locale: 'pl',
         allDaySlot: false,
+        datesSet: function(info) {
+            var startOfWeek = info.startStr;
+            var endOfWeek = info.endStr;
+
+            // Make an AJAX request to update the lesson counts
+            fetch(`index.php?action=main-index&startOfWeek=${startOfWeek}&endOfWeek=${endOfWeek}`)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('lessonCounts').innerHTML = html;
+                });
+        }
     });
 
     calendar.render();
