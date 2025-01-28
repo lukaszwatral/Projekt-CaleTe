@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
             eventPopup.style.position = 'absolute';
             eventPopup.style.backgroundColor = 'yellow';
             eventPopup.style.width = '250px';
-            eventPopup.style.height = '100px';
+            eventPopup.style.height = 'auto';
             eventPopup.style.border = '1px solid black';
             eventPopup.style.borderRadius = '5px';
             eventPopup.style.padding = '10px';

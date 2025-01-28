@@ -90,7 +90,8 @@ class Scrape
                 if($major == null){
                     $major = "Brak";
                 }
-                $this->insertSubject($subject, $form, $tok_name, $shortType, $shortKind, $specialisation, $major);
+                $shortForm = $item['lesson_form_short'];
+                $this->insertSubject($subject, $form, $tok_name, $shortType, $shortKind, $specialisation, $major, $shortForm);
             }
             //Grupa
             if(isset($item['group_name'])){
@@ -150,11 +151,12 @@ class Scrape
                 $room = $item['room'];
                 $semester = $item['semestr'];
                 $color = $item['color'];
+                $shortForm = $item['lesson_form_short'];
                 if ($color == null) {
                     $color = "Brak";
                 }
                 $lessonStatus = $item['lesson_status'];
-                $this->insertLesson($id, $dateSstart, $dateEnd, $cover, $teacherFirstName, $teacherLastName, $teacherTitle, $department, $group, $tok_name, $shortType, $shortKind, $specialisation, $major, $subject, $form, $room, $semester, $color, $lessonStatus);
+                $this->insertLesson($id, $dateSstart, $dateEnd, $cover, $teacherFirstName, $teacherLastName, $teacherTitle, $department, $group, $tok_name, $shortType, $shortKind, $specialisation, $major, $subject, $form, $room, $semester, $color, $lessonStatus, $shortForm);
             }
         }
     }
@@ -196,22 +198,22 @@ class Scrape
             $studyCourseModel->save();
         }
     }
-    private function insertSubject(string $subject, string $form , string $tok_name, string $shortType, string $shortKind, string $specialisation, string $major){
-        $studyCourseModel = new StudyCourse();
-        $result = $studyCourseModel->findStudyCourse($tok_name, $shortType, $shortKind, $specialisation, $major);
-        if($result){
-            $studyCourseId = $result->getId();
-            $subjectModel = new Subject();
-            $result = $subjectModel->findSubject($subject, $form, $shortKind, $studyCourseId);
-            if(!$result){
-                $subjectModel->setName($subject);
-                $subjectModel->setForm($form);
-                $subjectModel->setKindShort($shortKind);
-                $subjectModel->setStudyCourseId($studyCourseId);
-                $subjectModel->save();
-            }
+private function insertSubject(string $subject, string $form, string $tok_name, string $shortType, string $shortKind, string $specialisation, string $major, string $shortForm){
+    $studyCourseModel = new StudyCourse();
+    $result = $studyCourseModel->findStudyCourse($tok_name, $shortType, $shortKind, $specialisation, $major);
+    if($result){
+        $studyCourseId = $result->getId();
+        $subjectModel = new Subject();
+        $result = $subjectModel->findSubject($subject, $form, $shortForm, $studyCourseId);
+        if(!$result){
+            $subjectModel->setName($subject);
+            $subjectModel->setForm($form);
+            $subjectModel->setShortForm($shortForm);
+            $subjectModel->setStudyCourseId($studyCourseId);
+            $subjectModel->save();
         }
     }
+}
     private function insertStudyGroup(string $groupName){
         $studyGroupModel = new StudyGroup();
         $result = $studyGroupModel->findStudyGroup($groupName);
@@ -230,7 +232,7 @@ class Scrape
             $teacherModel->save();
         }
     }
-    private function insertLesson(int $id, string $dateSstart, string $dateEnd, string $cover, string $teacherFirstName,  string $teacherLastName, string $teacherTitle, string $department, string $group, string $tok_name, string $shortType, string $shortKind, string $specialisation, string $major, string $subject, string $form, string $room, int $semester, string $color, string $lessonStatus){
+    private function insertLesson(int $id, string $dateSstart, string $dateEnd, string $cover, string $teacherFirstName,  string $teacherLastName, string $teacherTitle, string $department, string $group, string $tok_name, string $shortType, string $shortKind, string $specialisation, string $major, string $subject, string $form, string $room, int $semester, string $color, string $lessonStatus, string $shortForm){
         $teacherModel = new Teacher();
         $teacherResult = $teacherModel->findTeacher($teacherFirstName, $teacherLastName, $teacherTitle);
         if($teacherResult){
@@ -248,7 +250,7 @@ class Scrape
                     if($studyCourseResult){
                         $studyCourseId = $studyCourseResult->getId();
                         $subjectModel = new Subject();
-                        $subjectResult = $subjectModel->findSubject($subject, $form, $shortKind, $studyCourseId);
+                        $subjectResult = $subjectModel->findSubject($subject, $form, $shortForm, $studyCourseId);
                         if($subjectResult){
                             $subjectId = $subjectResult->getId();
                             $roomBuildingModel = new RoomBuilding();

@@ -592,10 +592,11 @@ class Lesson{
 
     public function toArray($teacher = null, $subject = null, $classroom = null, $studyGroup = null, $department = null, $subjectForm = null, $studyCourse = null, $semester = null, $yearOfStudy = null, $student = null, $major = null, $specialisation = null, $start = null, $end = null, $color = null, $lessonStatus = null): array {
         $event =  [
-            'title' => $this->getSubjectName() . "" . $this->getClassroomName(),
+            'title' => $this->getSubjectName() . " (" . Subject::findById($this->getSubjectId())->getShortForm() . ")",
             'start' => $this->getDateStart(),
             'end' => $this->getDateEnd(),
             'teacher' => $this->getTeacherName(),
+            'TeacherCover' => $this->getTeacherCover(),
             'classroom' => $this->getClassroomName(),
             'studyGroup' => $this->getStudyGroupName(),
             'department' => $this->getDepartmentName(),
@@ -608,7 +609,7 @@ class Lesson{
             'color' => $this->getColor(),
             'lessonStatus' => $this->getLessonStatus(),
             'id' => $this->getId(),
-            'description' => $this->getSubjectName() . ", prowadzący " . $this->getTeacherName() . ", sala " . $this->getClassroomName() . ", grupa " . $this->getStudyGroupName() . " - " . $this->getSubjectForm(),
+            'description' => $this->getSubjectName() . " (" . Subject::findById($this->getSubjectId())->getShortForm() . ")" .", prowadzący " . $this->getTeacherName() . ", sala " . $this->getClassroomName() . ", grupa " . $this->getStudyGroupName() . " - " . $this->getLessonStatus(),
         ];
         return $event;
     }

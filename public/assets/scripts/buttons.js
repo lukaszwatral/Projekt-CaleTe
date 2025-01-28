@@ -44,4 +44,12 @@ document.addEventListener('DOMContentLoaded', function () {
     resetBtn.addEventListener('click', () => {
         window.location.href = '/';
     });
+
+    // Add event listener for Enter key
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            searchBtn.click();
+        }
+    });
 });
