@@ -52,7 +52,7 @@ class StudyGroup{
 
     public function findStudyGroup(string $name): ?StudyGroup{
         $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
-        $stmt = $pdo->prepare('SELECT * FROM StudyGroup WHERE name LIKE = :name');
+        $stmt = $pdo->prepare('SELECT * FROM StudyGroup WHERE name LIKE :name');
         $stmt->execute(['name' => $name]);
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         if ($result === false) {

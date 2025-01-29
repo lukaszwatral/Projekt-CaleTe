@@ -21,7 +21,7 @@ class Department {
         return $this->name;
     }
     public function setName(?string $name): void {
-        $this->name = $this->removePrefix($name);
+        $this->name = $name;
     }
 
     public function getShortName(): ?string {

@@ -9,9 +9,29 @@ $bodyClass = 'index';
 ob_start(); ?>
 
 
-    <div id="history">
-        <button type="button" id="historyBtn" class="btn">HISTORIA</button>
+    <div id="historyPanel" class="history-panel">
+        <button type="button" id="closeHistoryBtn" class="close-btn">&times;</button>
+        <h3>Ostatnie wyszukiwania</h3>
+        <ul id="historyList">
+            <?php if (isset($_COOKIE['searchHistory'])):
+                $history = json_decode($_COOKIE['searchHistory'], true); ?>
+                <?php foreach ($history as $item): ?>
+                <li class="history-item" data-search="<?= htmlspecialchars(json_encode($item)) ?>">
+                    <?= htmlspecialchars(implode(', ', $item)) ?>
+                </li>
+            <?php endforeach; ?>
+            <?php else: ?>
+                <li>Brak zapisanej historii.</li>
+            <?php endif; ?>
+        </ul>
+
+        <button type="button" id="clearHistoryBtn" class="btn">Usuń historię</button>
     </div>
+
+    <div class="history">
+        <button type="button" id="historyBtn" class="btn">Historia</button>
+    </div>
+
     <div id="filterForm">
         <div class="filterContainer">
             <form action="<?= $router->generatePath('main-index') ?>" method="get">
@@ -110,6 +130,7 @@ ob_start(); ?>
     </div>
     <!--    <script src="https://unpkg.com/tippy.js@6"></script>-->
     <script src="/assets/scripts/calendar.js"></script>
+    <script src="/assets/scripts/historypanel.js"></script>
 
 <?php $main = ob_get_clean();
 
