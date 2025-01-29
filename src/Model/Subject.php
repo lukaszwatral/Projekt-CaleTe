@@ -136,7 +136,7 @@ class Subject{
     public function toArray(): array{
         return [
 //        'name' => $this->getName() . " (" . StudyCourse::findById($this->getStudyCourseId())->getMajor() . ", " . StudyCourse::findById($this->getStudyCourseId())->getShortKind() . ", " . StudyCourse::findById($this->getStudyCourseId())->getShortType() . ")",
-          'name' => $this->getName(),
+          'item' => $this->getName(),
         ];
     }
 }

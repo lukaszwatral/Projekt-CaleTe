@@ -437,13 +437,23 @@ class Lesson{
         }
         if ($teacher != null) {
             $teacherArray = explode(" ", $teacher);
-            if (count($teacherArray) == 2) {
+            if (count($teacherArray) == 1) {
+                $sql .= ' AND (LOWER(Teacher.firstName) = LOWER(:name) OR LOWER(Teacher.lastName) = LOWER(:name))';
+                $params['name'] = $teacherArray[0];
+            } elseif (count($teacherArray) == 2) {
                 $sql .= ' AND ((LOWER(Teacher.firstName) = LOWER(:firstName1) AND LOWER(Teacher.lastName) = LOWER(:lastName1))';
                 $sql .= ' OR (LOWER(Teacher.firstName) = LOWER(:firstName2) AND LOWER(Teacher.lastName) = LOWER(:lastName2)))';
                 $params['firstName1'] = $teacherArray[0];
                 $params['lastName1'] = $teacherArray[1];
                 $params['firstName2'] = $teacherArray[1];
                 $params['lastName2'] = $teacherArray[0];
+            } elseif (count($teacherArray) == 3) {
+                $sql .= ' AND ((LOWER(Teacher.firstName) = LOWER(:firstName1) AND LOWER(Teacher.lastName) = LOWER(:lastName1))';
+                $sql .= ' OR (LOWER(Teacher.firstName) = LOWER(:firstName2) AND LOWER(Teacher.lastName) = LOWER(:lastName2)))';
+                $params['firstName1'] = $teacherArray[0];
+                $params['lastName1'] = $teacherArray[1] . ' ' . $teacherArray[2];
+                $params['firstName2'] = $teacherArray[0] . ' ' . $teacherArray[1];
+                $params['lastName2'] = $teacherArray[2];
             }
         }
         if ($subject != null) {

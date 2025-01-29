@@ -100,7 +100,7 @@ class Department {
 
     public function toArray(): array {
         return [
-            'name' => $this->getName(),
+            'item' => $this->getName(),
         ];
     }
 

@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller;
 
-use App\Model\Filter;
+use App\Model\Lesson;
 use App\Service\Router;
 use App\Service\Templating;
 
@@ -24,7 +24,7 @@ class FilterController
         $startOfWeek = $_GET['startOfWeek'] ?? null;
         $endOfWeek = $_GET['endOfWeek'] ?? null;
 
-        $filteredLessons = Filter::filteredFind($teacher, $subject, $classroom, $studyGroup, $department, $subjectForm, $studyCourse, $semester, $yearOfStudy, $student, $major, $specialisation);
+        $filteredLessons = Lesson::filteredFind($teacher, $subject, $classroom, $studyGroup, $department, $subjectForm, $studyCourse, $semester, $yearOfStudy, $student, $major, $specialisation);
 
         // Call the countSearchedValues function with start and end dates
         $counts = $this->countSearchedValues($startOfWeek, $endOfWeek);
@@ -52,7 +52,7 @@ class FilterController
         $major = $_GET['major'] ?? null;
         $specialisation = $_GET['specialisation'] ?? null;
 
-        $filteredLessons = Filter::filteredFind($teacher, $subject, $classroom, $studyGroup, $department, $subjectForm, $studyCourse, $semester, $yearOfStudy, $student, $major, $specialisation);
+        $filteredLessons = Lesson::filteredFind($teacher, $subject, $classroom, $studyGroup, $department, $subjectForm, $studyCourse, $semester, $yearOfStudy, $student, $major, $specialisation);
 
         $totalLessons = count($filteredLessons);
         $currentWeekLessons = 0;

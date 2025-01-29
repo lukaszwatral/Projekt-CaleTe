@@ -100,7 +100,7 @@ class RoomBuilding{
 
     public function toArray(): array {
         return [
-            'classroom' => $this->getBuildingRoom(),
+            'item' => $this->getBuildingRoom(),
         ];
     }
 }

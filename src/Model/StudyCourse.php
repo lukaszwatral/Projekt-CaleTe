@@ -82,7 +82,7 @@ class StudyCourse{
         return $this;
     }
 
-    public function findAll(): array{
+    public static function findAll(): array{
         $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
         $stmt = $pdo->prepare('SELECT * FROM StudyCourse');
         $stmt->execute();
@@ -133,11 +133,12 @@ class StudyCourse{
     {
         $pdo = new \PDO(Config::get('db_dsn'), Config::get('db_user'), Config::get('db_pass'));
         $stmt = $pdo->prepare('SELECT * FROM StudyCourse WHERE tokName LIKE :tokName');
-        $stmt->execute(['tokName' => "%$tokName%"]);
-        $result = $stmt->fetchAll();
-        if ($result === false) {
+        $stmt->execute(['tokName' => '%' . $tokName . '%']);
+        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        if (empty($result)) {
             return null; // No study course found
         }
+        $studyCourses = [];
         foreach ($result as $studyCourseArray) {
             $studyCourses[] = self::fromArray($studyCourseArray);
         }
@@ -171,11 +172,7 @@ class StudyCourse{
 
     public function toArray(): array{
         return [
-            'tokName' => $this->getTokName(),
-            'shortType' => $this->getShortType(),
-            'shortKind' => $this->getShortKind(),
-            'specialisation' => $this->getSpecialisation(),
-            'major' => $this->getMajor()
+            'item' => $this->getTokName(),
         ];
     }
 }

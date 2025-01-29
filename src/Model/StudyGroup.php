@@ -92,7 +92,7 @@ class StudyGroup{
 
     public function toArray() {
         return [
-            'name' => $this->getName()
+            'item' => $this->getName()
         ];
     }
 }

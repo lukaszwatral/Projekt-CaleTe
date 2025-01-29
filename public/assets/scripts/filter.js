@@ -20,9 +20,14 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function setupAutocomplete(inputId, kind) {
-    document.getElementById(inputId).addEventListener('input', function() {
+    const inputElement = document.getElementById(inputId);
+    const suggestions = document.getElementById(inputId + 'Suggestions');
+
+    // Disable browser autocomplete
+    inputElement.setAttribute('autocomplete', 'off');
+
+    inputElement.addEventListener('input', function() {
         const query = this.value;
-        const suggestions = document.getElementById(inputId + 'Suggestions');
 
         if (query.length >= 2) {
             fetch(`http://localhost:8000/index.php?action=apiplan2&kind=${kind}&query=${query}`)
@@ -30,12 +35,19 @@ function setupAutocomplete(inputId, kind) {
                 .then(data => {
                     console.log('API Response:', data); // Debugging: Log the API response
                     suggestions.innerHTML = '';
-                    if (data.length > 0) {
-                        data.forEach(item => {
+
+                    // Remove duplicates
+                    const uniqueData = Array.from(new Set(data.map(item => item.item)))
+                        .map(item => {
+                            return data.find(i => i.item === item);
+                        });
+
+                    if (uniqueData.length > 0) {
+                        uniqueData.forEach(item => {
                             const div = document.createElement('div');
-                            div.textContent = item.name; // Adjust this based on the response structure
+                            div.textContent = item.item; // Correctly reference the item property
                             div.addEventListener('click', function() {
-                                document.getElementById(inputId).value = item.name; // Auto-fill the input field
+                                inputElement.value = item.item; // Auto-fill the input field
                                 suggestions.innerHTML = ''; // Clear suggestions
                                 suggestions.style.display = 'none'; // Hide suggestions container
                             });
@@ -54,6 +66,16 @@ function setupAutocomplete(inputId, kind) {
             suggestions.style.display = 'none'; // Hide suggestions container
         }
     });
+
+    // inputElement.addEventListener('blur', function() {
+    //     suggestions.style.display = 'none'; // Hide suggestions when input loses focus
+    // });
+
+    inputElement.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            suggestions.style.display = 'none'; // Hide suggestions when ESC key is pressed
+        }
+    });
 }
 
 setupAutocomplete('teacher', 'teacher');
@@ -61,4 +83,4 @@ setupAutocomplete('classroom', 'classroom');
 setupAutocomplete('subject', 'subject');
 setupAutocomplete('studyGroup', 'studygroup');
 setupAutocomplete('department', 'department');
-setupAutocomplete('studyCourse', 'studyCourse');
+setupAutocomplete('studyCourse', 'studycourse');

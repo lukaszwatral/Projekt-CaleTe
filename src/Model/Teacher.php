@@ -123,7 +123,7 @@ class Teacher{
 
     public function toArray() {
         return [
-            'fullName' => $this->getFirstName() . ' ' . $this->getLastName(),
+            'item' => $this->getFirstName() . ' ' . $this->getLastName(),
         ];
     }
 }

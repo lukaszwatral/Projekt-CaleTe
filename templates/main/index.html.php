@@ -42,7 +42,6 @@ ob_start(); ?>
 
                     <label for="subjectForm">Forma przedmiotu:</label><br>
                     <input type="text" id="subjectForm" name="subjectForm" value="<?= htmlspecialchars($_GET['subjectForm'] ?? '') ?>"><br>
-                    <div id="subjectFormSuggestions" class="suggestions"></div>
 
                     <label for="studyCourse">Tok studiów:</label><br>
                     <input type="text" id="studyCourse" name="studyCourse" value="<?= htmlspecialchars($_GET['studyCourse'] ?? '') ?>"><br>
@@ -53,6 +52,7 @@ ob_start(); ?>
 
                     <label for="yearOfStudy">Rok studiów:</label><br>
                     <input type="text" id="yearOfStudy" name="yearOfStudy" value="<?= htmlspecialchars($_GET['yearOfStudy'] ?? '') ?>"><br>
+
                     <label for="major">Kierunek:</label><br>
                     <input type="text" id="major" name="major" value="<?= htmlspecialchars($_GET['major'] ?? '') ?>"><br>
 
@@ -92,18 +92,21 @@ ob_start(); ?>
 
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
     <div id="calendar"></div>
+    <div id="stats">
+        <p>Liczba wyników: <?= htmlspecialchars($counts['totalLessons']) ?>, w tym tygodniu: <?= htmlspecialchars($counts['currentWeekLessons']) ?></p>
+    </div>
     <div id="legend">
         <h2>Legenda</h2>
         <ul class="legend-list">
-            <li><span class="color-box" style="background-color: #006b27;"></span> Laboratorium</li>
-            <li><span class="color-box" style="background-color: #00809f;"></span> Wykład</li>
-            <li><span class="color-box" style="background-color: #ef9529;"></span> Lektorat</li>
-            <li><span class="color-box" style="background-color: #5a6e02;"></span> Projekt</li>
-            <li><span class="color-box" style="background-color: #004ca8;"></span> Audytoryjne</li>
-            <li><span class="color-box" style="background-color: #a8a8a8;"></span> Odwołane</li>
+            <li><span class="color-box" style="background-color: #1A8238;"></span> laboratorium</li>
+            <li><span class="color-box" style="background-color: #247C84;"></span> wykład</li>
+            <li><span class="color-box" style="background-color: #C44F00;"></span> lektorat</li>
+            <li><span class="color-box" style="background-color: #555500;"></span> projekt</li>
+            <li><span class="color-box" style="background-color: #007BB0;"></span> audytoryjne</li>
+            <li><span class="color-box" style="background-color: #004ca8;"></span> egzamin</li>
+            <li><span class="color-box" style="background-color: #494949;"></span> odwołane</li>
         </ul>
-        <p>Total Lessons: <?= htmlspecialchars($counts['totalLessons']) ?></p>
-        <p>Lessons in Current Week: <?= htmlspecialchars($counts['currentWeekLessons']) ?></p>
+
     </div>
     <script src="https://unpkg.com/tippy.js@6"></script>
     <script src="/assets/scripts/calendar.js"></script>
