@@ -26,11 +26,13 @@ class FilterController
 
         $filteredLessons = Lesson::filteredFind($teacher, $subject, $classroom, $studyGroup, $department, $subjectForm, $studyCourse, $semester, $yearOfStudy, $student, $major, $specialisation);
 
+        $startOfWeek = $_GET['startOfWeek'] ?? null;
+        $endOfWeek = $_GET['endOfWeek'] ?? null;
+
         // Call the countSearchedValues function with start and end dates
         $counts = $this->countSearchedValues($startOfWeek, $endOfWeek);
 
         $html = $templating->render('main/index.html.php', [
-            'filteredLessons' => $filteredLessons,
             'counts' => $counts,
             'router' => $router,
         ]);

@@ -73,27 +73,27 @@ ob_start(); ?>
 
 
 
-<!--    <ul class="index-list">-->
-<!--        --><?php //if (empty($filteredLessons)): ?>
-<!--            <li>No results found.</li>-->
-<!--        --><?php //else: ?>
-<!--            --><?php //foreach ($filteredLessons as $filteredLesson): ?>
-<!--                <li><h3>--><?php //= $filteredLesson->getId(), ". " , $filteredLesson->getDateStart(), "-", $filteredLesson->getDateEnd(), ", <br>Prowadzący: ", $filteredLesson->getTeacherName(), ", <br>Przedmiot: ", $filteredLesson->getSubjectName(), ", Forma: ", $filteredLesson->getSubjectForm(), ", <br>Sala: ", $filteredLesson->getClassroomName(), ", Grupa: ", $filteredLesson->getStudyGroupName(), ", <br>Wydział: ", $filteredLesson->getDepartmentName(), ", Tok: ", $filteredLesson->getStudyCourseName(), ", sem: ", $filteredLesson->getSemester(), ", rok: ", $filteredLesson->getYearOfStudy(), ", <br>Kierunek: ", $filteredLesson->getMajor(), ", Specjalizacja: ", $filteredLesson->getSpecialisation() ?><!--</h3>-->
-<!--                </li>-->
-<!--            --><?php //endforeach; ?>
-<!--        --><?php //endif; ?>
-<!--    </ul>-->
+    <!--    <ul class="index-list">-->
+    <!--        --><?php //if (empty($filteredLessons)): ?>
+    <!--            <li>No results found.</li>-->
+    <!--        --><?php //else: ?>
+    <!--            --><?php //foreach ($filteredLessons as $filteredLesson): ?>
+    <!--                <li><h3>--><?php //= $filteredLesson->getId(), ". " , $filteredLesson->getDateStart(), "-", $filteredLesson->getDateEnd(), ", <br>Prowadzący: ", $filteredLesson->getTeacherName(), ", <br>Przedmiot: ", $filteredLesson->getSubjectName(), ", Forma: ", $filteredLesson->getSubjectForm(), ", <br>Sala: ", $filteredLesson->getClassroomName(), ", Grupa: ", $filteredLesson->getStudyGroupName(), ", <br>Wydział: ", $filteredLesson->getDepartmentName(), ", Tok: ", $filteredLesson->getStudyCourseName(), ", sem: ", $filteredLesson->getSemester(), ", rok: ", $filteredLesson->getYearOfStudy(), ", <br>Kierunek: ", $filteredLesson->getMajor(), ", Specjalizacja: ", $filteredLesson->getSpecialisation() ?><!--</h3>-->
+    <!--                </li>-->
+    <!--            --><?php //endforeach; ?>
+    <!--        --><?php //endif; ?>
+    <!--    </ul>-->
 
 
-<!--    <div class="button-container">-->
-<!--        <button type="button" id="toggle-view-btn">Zmiana zakresu wyświetlania</button>-->
-<!--        <button type="button" id="calendar-format-btn">Zmiana sposobu wyświetlania</button>-->
-<!--    </div>-->
+    <!--    <div class="button-container">-->
+    <!--        <button type="button" id="toggle-view-btn">Zmiana zakresu wyświetlania</button>-->
+    <!--        <button type="button" id="calendar-format-btn">Zmiana sposobu wyświetlania</button>-->
+    <!--    </div>-->
 
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
     <div id="calendar"></div>
     <div id="stats">
-        <p>Liczba wyników: <?= htmlspecialchars($counts['totalLessons']) ?>, w tym tygodniu: <?= htmlspecialchars($counts['currentWeekLessons']) ?></p>
+        <p id="event-count"></p>
     </div>
     <div id="legend">
         <h2>Legenda</h2>
@@ -108,10 +108,9 @@ ob_start(); ?>
         </ul>
 
     </div>
-    <script src="https://unpkg.com/tippy.js@6"></script>
+    <!--    <script src="https://unpkg.com/tippy.js@6"></script>-->
     <script src="/assets/scripts/calendar.js"></script>
 
 <?php $main = ob_get_clean();
 
 include __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'base.html.php';
-

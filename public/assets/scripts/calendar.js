@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     var calendarEl = document.getElementById('calendar');
     var eventsCache = {};
-
+    var eventCount = document.getElementById('event-count');
     var teacher = document.getElementById('teacher');
     var classroom = document.getElementById('classroom');
     var subject = document.getElementById('subject');
@@ -42,7 +42,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
             fetch(url)
                 .then(response => response.json())
-                .then(data => successCallback(data))
+                .then(data => {
+                    successCallback(data);
+                    updateEventCount();
+                })
                 .catch(error => failureCallback(error));
         },
         loading: function (isLoading) {
@@ -66,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function () {
             eventPopup.style.border = '1px solid black';
             eventPopup.style.borderRadius = '5px';
             eventPopup.style.padding = '10px';
-            eventPopup.style.zIndex = 1000;
+            eventPopup.style.zIndex = 9999;
 
             var eventElement = info.el;
             var boundingRect = eventElement.getBoundingClientRect();
@@ -128,20 +131,19 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         locale: 'pl',
         allDaySlot: false,
-
-        datesSet: function(info) {
-            var startOfWeek = info.startStr;
-            var endOfWeek = info.endStr;
-
-            // Make an AJAX request to update the lesson counts
-            fetch(`index.php?action=main-index&startOfWeek=${startOfWeek}&endOfWeek=${endOfWeek}`)
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('lessonCounts').innerHTML = html;
-                });
-        }
+    });
+    calendar.on('eventAdd', function() {
+        updateEventCount();
     });
 
-
     calendar.render();
+
+    function updateEventCount() {
+        let eventsTotal = calendar.getEvents();
+        let visibleEvents = eventsTotal.filter(event => {
+            return event.start >= calendar.view.currentStart && event.start < calendar.view.currentEnd;
+        });
+
+        eventCount.innerText = "Liczba wyników: " + eventsTotal.length + " (wyświetlono: " + visibleEvents.length + ")";
+    }
 });
